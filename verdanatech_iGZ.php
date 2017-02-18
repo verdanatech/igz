@@ -23,7 +23,7 @@
  * --------------------------------------------------------------------------
  */
 
-include './conf/igz.php';
+include './conf/igz.conf.php';
 require_once dirname(__FILE__).'/include/config.inc.php';
 
 $page['title'] = _('Verdanatech iGZ');
