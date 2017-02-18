@@ -122,9 +122,8 @@ if ($glpi_active == 1){
 	//				'entities_id'			=> '0',
 					'name'					=> "[Verdanatech iGZ] - Ocorrência em " . $hostName,
 					'content'				=> "Foi detectado pelo sistema de monitoramento, um problema de ". $triggerName . 
-											   " em " . $hostName . "\nO número desta trigger no Zabbix é " . $triggerId . 
-											   " e sua severidade é " . $severity . 
-											   "\nA URL para consulta desta trigger é " . $triggerURL,
+											   " em " . $hostName . "\n. O número desta trigger no Zabbix é " . $triggerId . 
+											   " e sua severidade é " . $severity,
 					'status'				=> '1',
 					'priority'				=> $severity
 	));
@@ -161,7 +160,7 @@ if ($telegram_active == 1) {
 	
 	$mensagem = "[Verdanatech iGZ] - Ocorrência em " .$hostName . 
 				" Foi detectado pelo sistema de monitoramento, um problema de " . 
-				$triggerName . " em " . $hostName. "O número desta trigger no Zabbix é " .
+				$triggerName . " em " . $hostName. ". O número desta trigger no Zabbix é " .
 				$triggerId . " e sua severidade é $severity. A prioridade deste evento é $severity";
 	
 	$url="https://api.telegram.org/bot".$telegramBotToken."/sendMessage?chat_id=".$telegramIdUser."&text=".$mensagem;
