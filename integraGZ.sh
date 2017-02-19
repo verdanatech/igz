@@ -1400,6 +1400,7 @@ git clone $verdanatechGIT
 chmod 775 igz/*
 
 sed -i 's/ZABBIX_FRONTEND_DIR\//'$(echo $zabbixFrontend | sed 's/\//\\\//g')'/' igz/igz.php
+sed -i 's/ZABBIX_EXTERNALSCRIPT_DIR\//'$(echo $externalScriptsDir | sed 's/\//\\\//g')'/' igz/verdanatech_iGZ.php
 
 mv igz/igz.php $externalScriptsDir/
 
@@ -1516,7 +1517,6 @@ case $menu01Option in
 
 esac
 done
-
 
 
 
