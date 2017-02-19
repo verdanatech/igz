@@ -137,7 +137,7 @@ $config = select_config();
 				<li>
 					IMPORTANTE: <BR>
 					Lembre-se de criar a ACTION com o comando a seguir: <BR>
-					php /usr/lib/zabbix/externalscripts/igz.php  hostName="{HOST.NAME}" ipAddress="{HOST.IP}" zabbixDate="{DATE}" triggerId="{TRIGGER.ID}" triggerName="{TRIGGER.NAME}" state="{TRIGGER.STATUS}" zabbixEventId="{EVENT.ID}" severity="{TRIGGER.SEVERITY}" triggerDescription="{TRIGGER.DESCRIPTION}" triggerURL="{TRIGGER.URL}"	
+					php ZABBIX_EXTERNALSCRIPT_DIR/igz.php  hostName="{HOST.NAME}" ipAddress="{HOST.IP}" zabbixDate="{DATE}" triggerId="{TRIGGER.ID}" triggerName="{TRIGGER.NAME}" state="{TRIGGER.STATUS}" zabbixEventId="{EVENT.ID}" severity="{TRIGGER.SEVERITY}" triggerDescription="{TRIGGER.DESCRIPTION}" triggerURL="{TRIGGER.URL}"	
 				</li>
 			</ul>
 		</div>
