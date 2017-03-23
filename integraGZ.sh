@@ -3,8 +3,8 @@
 # -------------------------------------------------------------------------
 # @Programa 
 # 	@name: integraGZ.sh
-#	@versao: 2.0
-#	@Data 17 de Fevereiro de 2017
+#	@versao: 2.1
+#	@Data 23 de Março de 2017
 #	@Copyright: Verdanatech Soluções em TI, 2016 - 2017
 #	@Copyright: Pillares Consulting, 2016
 # --------------------------------------------------------------------------
@@ -25,12 +25,12 @@
 
 # Variaveis
 
-versionDate="February 17, 2017"
-TITULO="integraGZ.sh - v.2.0"
+versionDate="March 23, 2017"
+TITULO="integraGZ.sh - v.2.1"
 BANNER="http://www.verdanatech.com"
 
 devMail=halexsandro.sales@verdanatech.com
-zabbixVersion=zabbix-3.2.3
+zabbixVersion=zabbix-3.2.4
 TMP_DIR=/tmp
 zabbixSource=$TMP_DIR/$zabbixVersion
 verdanatechGIT=https://github.com/verdanatech/igz
@@ -148,7 +148,7 @@ whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
 This script aims to perform the installation automated systems:
  - GLPI 9.1.2  [http://glpi-project.com]
   -- With a lot plugins from community
- - Zabbix 3.2.3   [http://zabbix.com]
+ - Zabbix 3.2.4   [http://zabbix.com]
   -- zabbix-server-mysql
   -- zabbix-agent
 " --fb 0 0 0
@@ -817,17 +817,17 @@ sleep 1
 
 	cd /tmp
 
-	wget http://pillares.net/scripts/listaPortasSNMP.sh
+	wget http://www.verdanatech.com/scripts/listaPortasSNMP.sh
 	mv listaPortasSNMP.sh /bin/
 	chmod 775 /bin/listaPortasSNMP.sh
 
-	wget http://pillares.net/scripts/zbTemplateBuilder.sh
+	wget http://www.verdanatech.com/scripts/zbTemplateBuilder.sh
 	mv zbTemplateBuilder.sh /bin/
 	chmod 775 /bin/zbTemplateBuilder.sh
 
-	wget https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.3/zabbix-3.2.3.tar.gz
-	tar -zxvf zabbix-3.2.3.tar.gz
-	cd zabbix-3.2.3
+	wget "https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.4/zabbix-3.2.4.tar.gz"
+	tar -zxvf zabbix-3.2.4.tar.gz
+	cd zabbix-3.2.4
 
 	./configure --enable-server --enable-agent --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --with-ssh2 --with-ldap --with-iconv --with-gnutls --with-unixodbc --with-openipmi --with-jabber=/usr --enable-ipv6 --prefix=/usr/local/zabbix
 
@@ -917,8 +917,8 @@ sleep 1
 	# Dashboard. This plugin allows view statistics charts and reports from GLPI.
 	# -Can be used with helpdesk.
 
-	wget https://forge.glpi-project.org/attachments/download/2177/GLPI-dashboard_plugin-0.8.1.tar.gz
-	tar -zxvf GLPI-dashboard_plugin-0.8.1.tar.gz
+	wget https://forge.glpi-project.org/attachments/download/2179/GLPI-dashboard_plugin-0.8.2.tar.gz
+	tar -zxvf GLPI-dashboard_plugin-0.8.2.tar.gz
 	mv dashboard /var/www/html/glpi/plugins/
 	
 	#
@@ -1049,8 +1049,8 @@ sleep 1
 	#	- Order management (with approval workflow)
 	#	- Budgets management
 
-	wget https://github.com/pluginsGLPI/order/releases/download/1.9.5/glpi-order-1.9.5.tar.gz
-	tar -zxvf glpi-order-1.9.5.tar.gz
+	wget https://github.com/pluginsGLPI/order/releases/download/1.9.6/glpi-order-1.9.6.tar.bz2
+	tar -jxvf glpi-order-1.9.6.tar.bz2
 	mv order /var/www/html/glpi/plugins/order
 
 	#
@@ -1061,8 +1061,8 @@ sleep 1
 	# - ticket's number format
 	# - etc
 
-	wget https://forge.glpi-project.org/attachments/download/2158/glpi-behaviors.1.2.tar.gz
-	tar -zxvf glpi-behaviors.1.2.tar.gz
+	wget https://forge.glpi-project.org/attachments/download/2178/glpi-behaviors-1.3.tar.gz
+	tar -zxvf glpi-behaviors-1.3.tar.gz
 	mv behaviors /var/www/html/glpi/plugins/behaviors
 
 	#
@@ -1225,18 +1225,6 @@ sleep 1
 	wget "https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.1%2B1.1/fusioninventory-for-glpi_9.1.1.1.tar.gz"
 	tar -zxvf "fusioninventory-for-glpi_9.1.1.1.tar.gz"
 	mv fusioninventory /var/www/html/glpi/plugins/fusioninventory
-
-	#
-	# Baixando Webservices alterado por Stevenes para funcionar com o GLPI 9.1
-	# This plugin provides a server for Web Services which allow an external application to check and control GLPI.
-	# Currently, the servers implemented are :
-	# * XMLRPC
-	# * SOAP
-	# It provides some methods and a development framework to alow other plugins to provide their own methods.
-
-	wget http://pillares.net/scripts/webservices911.tgz
-	tar -zxvf webservices911.tgz
-	mv webservices /var/www/html/glpi/plugins/webservices
 
 	# Adequando Apache
 	
