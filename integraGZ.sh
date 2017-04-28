@@ -3,8 +3,8 @@
 # -------------------------------------------------------------------------
 # @Programa 
 # 	@name: integraGZ.sh
-#	@versao: 2.1
-#	@Data 23 de Março de 2017
+#	@versao: 2.2
+#	@Data 28 de Abril de 2017
 #	@Copyright: Verdanatech Soluções em TI, 2016 - 2017
 #	@Copyright: Pillares Consulting, 2016
 # --------------------------------------------------------------------------
@@ -25,12 +25,12 @@
 
 # Variaveis
 
-versionDate="March 23, 2017"
-TITULO="integraGZ.sh - v.2.1"
+versionDate="April 28, 2017"
+TITULO="integraGZ.sh - v.2.2"
 BANNER="http://www.verdanatech.com"
 
 devMail=halexsandro.sales@verdanatech.com
-zabbixVersion=zabbix-3.2.4
+zabbixVersion=zabbix-3.2.5
 TMP_DIR=/tmp
 zabbixSource=$TMP_DIR/$zabbixVersion
 verdanatechGIT=https://github.com/verdanatech/igz
@@ -40,7 +40,7 @@ zabbixTag=0
 
 clear
 
-echo -e " ------------------------------------------------ _   _   _ \n ----------------------------------------------- / \\ / \\ / \\ \n ---------------------------------------------- ( i | G | Z ) \n ----------------------------------------------- \\_/ \\_/ \\_/ \n| __      __          _                   _            _\n| \\ \\    / /         | |                 | |          | | \n|  \\ \\  / ___ _ __ __| | __ _ _ __   __ _| |_ ___  ___| |__ \n|   \\ \\/ / _ | '__/ _\` |/ _\` | '_ \\ / _\` | __/ _ \\/ __| '_ \\ \n|    \\  |  __| | | (_| | (_| | | | | (_| | ||  __| (__| | | | \n|     \\/ \\___|_|  \\__,_|\\__,_|_| |_|\\__,_|\\__\\___|\\___|_| |_| \n| \n|                    consulting, training and implamentation \n|                                  comercial@verdanatech.com \n|                                        www.verdanatech.com \n|                                          +55 81 3091 42 52 \n ------------------------------------------------------------ \n| integraGZ.sh  - GLPI 9.1.2 and a lot plugins + Zabbix 3.2.4| \n ------------------------------------------------------------ \n
+echo -e " ------------------------------------------------ _   _   _ \n ----------------------------------------------- / \\ / \\ / \\ \n ---------------------------------------------- ( i | G | Z ) \n ----------------------------------------------- \\_/ \\_/ \\_/ \n| __      __          _                   _            _\n| \\ \\    / /         | |                 | |          | | \n|  \\ \\  / ___ _ __ __| | __ _ _ __   __ _| |_ ___  ___| |__ \n|   \\ \\/ / _ | '__/ _\` |/ _\` | '_ \\ / _\` | __/ _ \\/ __| '_ \\ \n|    \\  |  __| | | (_| | (_| | | | | (_| | ||  __| (__| | | | \n|     \\/ \\___|_|  \\__,_|\\__,_|_| |_|\\__,_|\\__\\___|\\___|_| |_| \n| \n|                    consulting, training and implamentation \n|                                  comercial@verdanatech.com \n|                                        www.verdanatech.com \n|                                          +55 81 3091 42 52 \n ------------------------------------------------------------ \n| integraGZ.sh  - GLPI 9.1.3 and a lot plugins + Zabbix 3.2.5| \n ------------------------------------------------------------ \n
 "
 sleep 5
 
@@ -146,9 +146,9 @@ INFORMATION ()
 
 whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
 This script aims to perform the installation automated systems:
- - GLPI 9.1.2  [http://glpi-project.com]
+ - GLPI 9.1.3  [http://glpi-project.com]
   -- With a lot plugins from community
- - Zabbix 3.2.4   [http://zabbix.com]
+ - Zabbix 3.2.5   [http://zabbix.com]
   -- zabbix-server-mysql
   -- zabbix-agent
 " --fb 0 0 0
@@ -825,9 +825,9 @@ sleep 1
 	mv zbTemplateBuilder.sh /bin/
 	chmod 775 /bin/zbTemplateBuilder.sh
 
-	wget "https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.4/zabbix-3.2.4.tar.gz"
-	tar -zxvf zabbix-3.2.4.tar.gz
-	cd zabbix-3.2.4
+	wget "https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.5/zabbix-3.2.5.tar.gz"
+	tar -zxvf zabbix-3.2.5.tar.gz
+	cd zabbix-3.2.5
 
 	./configure --enable-server --enable-agent --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --with-ssh2 --with-ldap --with-iconv --with-gnutls --with-unixodbc --with-openipmi --with-jabber=/usr --enable-ipv6 --prefix=/usr/local/zabbix
 
@@ -894,8 +894,8 @@ sleep 1
 
 	# Baixando o GLPI
 	###
-	wget https://github.com/glpi-project/glpi/releases/download/9.1.2/glpi-9.1.2.tgz
-	tar -zxvf glpi-9.1.2.tgz
+	wget https://github.com/glpi-project/glpi/releases/download/9.1.3/glpi-9.1.3.tgz
+	tar -zxvf glpi-9.1.3.tgz
 	mv glpi /var/www/html/
 
 	#
@@ -1162,9 +1162,9 @@ sleep 1
 	# 
 	# This plugin allows you to back up the configuration of the network devices on TFTP server.
 
-	wget https://github.com/jsamaniegog/nebackup/archive/2.1.1.zip
-	unzip 2.1.1.zip
-	mv nebackup-2.1.1 /var/www/html/glpi/plugins/nebackup
+	wget https://github.com/jsamaniegog/nebackup/archive/2.1.2.zip
+	unzip 2.1.2.zip
+	mv nebackup-2.1.2 /var/www/html/glpi/plugins/nebackup
 
 	#
 	# Baixando Auto Login
@@ -1192,7 +1192,7 @@ sleep 1
 	# 
 	# This plugin allow your browser to show notifications for GLPI
 
-	wget https://github.com/edgardmessias/browsernotification/releases/download/1.1.0/browsernotification.zip
+	wget https://github.com/edgardmessias/browsernotification/releases/download/1.1.8/browsernotification.zip
 	unzip browsernotification.zip
 	mv browsernotification /var/www/html/glpi/plugins/
 
@@ -1505,6 +1505,3 @@ case $menu01Option in
 
 esac
 done
-
-
-
