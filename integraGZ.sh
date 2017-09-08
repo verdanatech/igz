@@ -1,10 +1,9 @@
 #!/bin/bash
-
 # -------------------------------------------------------------------------
 # @Programa 
 # 	@name: integraGZ.sh
-#	@versao: 2.2
-#	@Data 28 de Abril de 2017
+#	@versao: 2.2.1
+#	@Data 08 de Setembro de 2017
 #	@Copyright: Verdanatech Soluções em TI, 2016 - 2017
 #	@Copyright: Pillares Consulting, 2016
 # --------------------------------------------------------------------------
@@ -22,150 +21,1037 @@
 #
 # If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------------
+ 
+#
+# Variables Declaration
+#
 
-# Variaveis
+# Discovery the system version and instanciate variables
+source /etc/os-release
 
-versionDate="April 28, 2017"
-TITULO="integraGZ.sh - v.2.2"
+serverAddress=$(hostname -I | cut -d' ' -f1)
+
+glpiVersion="GLPI 9.1.6"
+zabbixVersion="Zabbix 3.4.1"
+
+verdanatechGIT="https://github.com/verdanatech/igz"
+
+# Control
+glpiInstallTag=0
+zabbixInstallTag=0
+
+# Works DIRs
+
+# Temp dir
+TMP_DIR=/tmp
+
+# GLPi dir
+GLPI_DIR="/var/www/html/glpi"
+GLPI_PLUGINS_DIR=$GLPI_DIR/plugins
+
+versionDate="Augost 11, 2017"
+TITULO="Verdanatech iGZ - v.2.2.1"
 BANNER="http://www.verdanatech.com"
 
-devMail=halexsandro.sales@verdanatech.com
-zabbixVersion=zabbix-3.2.5
-TMP_DIR=/tmp
-zabbixSource=$TMP_DIR/$zabbixVersion
-verdanatechGIT=https://github.com/verdanatech/igz
-serverAddress=$(hostname -I | cut -d' ' -f1)
-glpiTag=0
-zabbixTag=0
+devMail="halexsandro.sales@verdanatech.com"
+
+# Zabbix links
+zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.4.1/zabbix-3.4.1.tar.gz"
+
+# GLPi links
+glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.1.6/glpi-9.1.6.tgz"
+
+# Plugin OS 0.0.7
+glpiPluginOs="https://ufpr.dl.sourceforge.net/project/glpi-os/glpi-os-0.0.7.tar.gz"
+
+# Plugin Rack 1.7.0
+# This plugin allows you to create bays. Manage the placement of your materials in your bays. And so know the space and its power 
+# 	consumption and heat dissipation.
+# - Bay detail : height - width - depth - weight - number of U.
+# - Front and back management.
+# - Definition of model specifications and materials used (power consumption, numbre of power supply, calorific waste, flow Rate, 
+# 	size (U), weight, depth)
+glpiPluginRacks="https://github.com/InfotelGLPI/racks/releases/download/1.7.0/glpi-racks-1.7.0.tar.gz"
+
+# Plugin Dashboard 0.8.6
+# This plugin allows you to create bays. Manage the placement of your materials in your bays. And so know the space and its power 
+# 	consumption and heat dissipation.
+# - Bay detail : height - width - depth - weight - number of U.
+# - Front and back management.
+# - Definition of model specifications and materials used (power consumption, numbre of power supply, calorific waste, flow Rate, 
+# 	size (U), weight, depth)
+glpiPluginDashboard="https://forge.glpi-project.org/attachments/download/2197/GLPI-dashboard_plugin-0.8.6.tar.gz"
+
+# Plugin Mydashboard 1.3.2
+# This plugin enables you to replace GLPI central by a dashboard
+# https://raw.githubusercontent.com/InfotelGLPI/mydashboard/master/README.md
+glpiPluginMydashboard="https://github.com/InfotelGLPI/mydashboard/releases/download/1.3.2/glpi-mydashboard-1.3.2.tar.gz"
+
+# Plugin Seasonality 1.2.0
+# This plugin allows you to create seasonality for specific categories and thus increase the urgency and therefore the priority of the ticket
+glpiPluginSeasonality="https://github.com/InfotelGLPI/seasonality/releases/download/1.2.0/glpi-seasonality-1.2.0.tar.gz"
+
+# Plugin SimCard 1.4.2
+# Add simcards management, link them to computers and phones
+glpiPluginSimcard="https://github.com/pluginsGLPI/simcard/releases/download/1.4.2/glpi-simcard-1.4.2.tar.gz"
+
+# Plugin Data Injection 2.4.2
+# It allows to create models of injection for a future re-use. It's been created in order to:
+# - import data coming from others asset management softwares
+# - inject electronic delivery forms
+# Data to be imported using the plugains are:
+# - inventory data (except softwares and licenses)
+# - management data (contract, contact, supplier)
+# - configuration data (user, group, entity)
+glpiPluginDatainjection="https://github.com/pluginsGLPI/datainjection/releases/download/2.4.2/glpi-datainjection-2.4.2.tar.gz"
+
+# Plugin Generic Objects 2.4.0
+# This plugin allows you to do the inventory of new item types without having to code, it allows you to create those new item types, it 	
+# allows type creation, manages available fields. Has full integration with the software (Helpdesk, loans, templates, etc.) 
+# 	It has support  and connectivity for and with the File Injection plugin
+glpiPluginGenericobjects="https://github.com/pluginsGLPI/genericobject/releases/download/2.4.0/glpi-genericobject-2.4.0.tar.gz"
+
+# Plugin Appliances Inventory 2.2.1
+# Baixando Appliances Inventory
+# This plugin enables you to create appliance (several elements constituting a unit).
+# -Appliances creation (composed by various inventory item)
+# -Direct management from items
+# -Integrated with Helpdesk
+# NB : This plugin can be integrated in environment plugin and be used with archires plugin.
+glpiPluginAppliancesinventory="https://forge.glpi-project.org/attachments/download/2168/glpi-appliances-2.2.1.tar.gz"
+
+# Plugin Certificates Inventory 2.2.1
+# This plugin enables you to manage your certificates into your network and associate them with elements of the inventory.
+# A mailing system allow to verify already expired or soon expired certificates.
+# - Can be used with helpdesk
+# - Can be integrated into Environment plugin.
+glpiPluginCertificatesinventory="https://github.com/InfotelGLPI/certificates/releases/download/2.2.2/glpi-certificates-2.2.2.tar.gz"
+
+# Plugin Databases Inventory 1.9.0
+# This plugin enables you to manage the databases of your network and associate them with elements of the inventory.
+# - Instances inventory
+# - Scripts inventory.
+# - Can be used with helpdesk
+# -Can be integrated into Environment plugin.
+glpiPluginDatabasesinventory="https://github.com/InfotelGLPI/databases/releases/download/1.9.0/glpi-databases-1.9.0.tar.gz"
+
+# Plugin Domains Inventory 1.8.1
+# This plugin enables you to manage the domain names of your network and associate them with elements of the inventory.
+# A mailing system allow to verify already expired or soon expired domain names.
+# -Can be used with helpdesk
+# -Can be integrated into Environment plugin.
+glpiPluginDomainsinventory="https://github.com/InfotelGLPI/domains/releases/download/1.8.1/glpi-domains-1.8.1.tar.gz"
+
+# Plugin Human Resources Management 2.3.1
+# This plugin allows you to manage human resources to properly manage the allocation of material.
+# - Management of various modes (private, public, SSII)
+# Features :
+# - Checklists management
+# - Tasks management
+# - Notifications system
+# - Can be used with helpdesk
+# - Can be used with badges plugin
+# - Can be used with PDF plugin
+glpiPluginHumanresources="https://github.com/InfotelGLPI/resources/releases/download/2.3.1/glpi-resources-2.3.1.tar.gz"
+
+# Plugin Web Applications Inventory 2.3.1
+# This plugin allows you to list your Web applications of your network and associate them with elements of the inventory.
+# - Can be used with helpdesk,
+# - Can be used with PDF plugin,
+# - Can be used with Environment plugin
+glpiPluginWebapplicationsinventory="https://github.com/InfotelGLPI/webapplications/releases/download/2.3.1/glpi-webapplications-2.3.1.tar.gz"
+
+# Plugin Order Management 1.9.6
+# This plugin allows you to manage order management within GLPI :
+#	- Products references management
+#	- Order management (with approval workflow)
+#	- Budgets management
+glpiPluginOrdermanagement="https://github.com/pluginsGLPI/order/releases/download/1.9.6/glpi-order-1.9.6.tar.bz2"
+
+# Plugin Behaviors 1.5
+# This plugin allows you to add optional behaviors to GLPI.
+# - mandatory fields
+# - requester's group
+# - ticket's number format
+# - etc
+glpiPluginBehaviors="https://forge.glpi-project.org/attachments/download/2194/glpi-behaviors-1.5.0.tar.gz"
+
+# Plugin Escalade 2.1.0
+# This plugin simplifies the ticket escalation to different groups
+# It adds the following features :
+#
+#    Display a visual history of the assignement groups on a ticket.
+#    Rapid escalation to a group present in history.
+#    Assign initiator group when ticket solution provided.
+#    provide automatic assignment of tickets on ticket category change.
+#    Fast cloning of ticket.
+#    Closing cloned tickets simultaneously.
+#    Take the first or last group of technician (on ticket modification).	
+#    New button for rapid self-assignment of a ticket.
+glpiPluginEscalade="https://github.com/pluginsGLPI/escalade/releases/download/2.1.0/glpi-escalade-2.1.0.tar.gz"
+
+# Plugin Historical Purge 1.2.2
+# This plugin enables historical purge
+glpiPluginHistoricalpurge="https://github.com/pluginsGLPI/purgelogs/releases/download/1.2.2/glpi-purgelogs-1.2.2.tar.gz"
+
+# Plugin Financial Reports 2.3.0
+# Financial report : Asset situation. This plugin allows you to generate a financial report (asset situation) for a given date.
+# - Export Csv, Pdf
+glpiPluginFinancialreports="https://github.com/InfotelGLPI/financialreports/releases/download/2.3.0/glpi-financialreports-2.3.0.tar.gz"
+
+# Plugin Accounts Inventory 2.2.0
+# Manage accounts (login / password).
+# This plugin enables you to manage the accounts of your network and associate them with elements of the inventory.
+# The accounts are crypted in database with hash and crypting key.
+# A mailing system allow to verify expired accounts.
+glpiPluginAccountsinventory="https://github.com/InfotelGLPI/accounts/releases/download/2.2.0/glpi-accounts-2.2.0.tar.gz"
+
+# Plugin More Reporting 1.3.1
+# Add (and develop) new graphical reports for glpi.
+# 
+# This plugins embed a set of new statistics reports :
+# 
+#     Helpdesk
+#         Backlog
+#         Ticket age
+#         Tickets per group or technician
+#         Top categories or requester groups
+#         Number of group changes
+#         5 SLA reports
+# 
+#     Inventory
+#         Os versions and distributions
+#         Top manufacturers
+#         Top types (server, laptop, ...)
+#         Top status
+#         Age of computers
+#         FusionInventory agents
+# 
+#     Logs distribution
+# 
+# You can also develop new report with the framework of plugin.
+# See documentation : https://github.com/PluginsGLPI/mreporting/wiki
+glpiPluginMorereporting="https://github.com/pluginsGLPI/mreporting/releases/download/1.3.1/glpi-mreporting-1.3.1.tar.bz2"
+
+# Plugin PDF 1.1
+# 
+# This plugin allow you to select and export informations of an equipment to PDF file.
+# - equipment types from GLPI
+# - equipment types from some plugins
+# - additional data from some plugins
+# - one or many object(s) in a file
+glpiPluginPdf="https://forge.glpi-project.org/attachments/download/2171/glpi-pdf-1.1.tar.gz"
+
+# Plugin Network Equipment Backup 2.1.3
+# 
+# This plugin allows you to back up the configuration of the network devices on TFTP server.
+glpiPluginNetworkequipmentbackup="https://github.com/jsamaniegog/nebackup/archive/2.1.3.zip"
+
+# Plugin Auto Login 2.1.1
+# 
+# This plugin add support to "Remember me" function in GLPI and skip the login page if you are already authenticated
+# Go to Configuration > General > Auto Login to configure remember time and default checkbox state
+glpiPluginAutologin="https://github.com/edgardmessias/autologin/releases/download/2.1.1/autologin.zip"
+
+# Plugin Browser Notification 1.1.9
+# 
+# This plugin allow your browser to show notifications for GLPI
+glpiPluginBrowsernotification="https://github.com/edgardmessias/browsernotification/releases/download/1.1.9/browsernotification.zip"
+
+# Plugin FusionInventory 9.1+1.1
+	# FusionInventory is a free and open source project providing hardware, software inventory, software deployment and network 
+	#	discovery to the IT asset management and helpdesk software called GLPI.
+	# "FusionInventory for GLPI" is a collection of plugins communicating with some agents (FusionInventory-Agent), deployed on computers
+	#
+	#    FusionInventory Core: provides core functionnalities:
+	#        Communication with inventory and network discovery agents.
+	#        Tasks management and scheduling.
+	#        Wake on LAN.
+	#        Centralized rules for assets import in GLPI.
+	#        Unknown devices management (temporary zone, in GLPI, before real asset management).
+	#
+	#    FusionInventory Inventory:
+	#        Local inventory for computers (hardware, software, antivirus).
+	#        Handle and update computers already in GLPI.
+	#
+	#    FusionInventory SNMP:
+	#        Network discovery, unknown devices management (using FusionInventory core plugin).
+	#        Remote network devices and printers (thanks to the SNMP protocol).	
+	#        Get network port informations, VLANs, link between switchs network ports and assets already in GLPI (computers, network printers, 		
+	#		network devices, etc.).
+	#        Change history and reports for each network port.
+	#        Printers cartridges' ink levels, daily page counters and reports.
+glpiPluginFusionInventory="https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.1%2B1.1/fusioninventory-for-glpi_9.1.1.1.tar.gz"
+
+
 
 clear
 
-echo -e " ------------------------------------------------ _   _   _ \n ----------------------------------------------- / \\ / \\ / \\ \n ---------------------------------------------- ( i | G | Z ) \n ----------------------------------------------- \\_/ \\_/ \\_/ \n| __      __          _                   _            _\n| \\ \\    / /         | |                 | |          | | \n|  \\ \\  / ___ _ __ __| | __ _ _ __   __ _| |_ ___  ___| |__ \n|   \\ \\/ / _ | '__/ _\` |/ _\` | '_ \\ / _\` | __/ _ \\/ __| '_ \\ \n|    \\  |  __| | | (_| | (_| | | | | (_| | ||  __| (__| | | | \n|     \\/ \\___|_|  \\__,_|\\__,_|_| |_|\\__,_|\\__\\___|\\___|_| |_| \n| \n|                    consulting, training and implamentation \n|                                  comercial@verdanatech.com \n|                                        www.verdanatech.com \n|                                          +55 81 3091 42 52 \n ------------------------------------------------------------ \n| integraGZ.sh  - GLPI 9.1.3 and a lot plugins + Zabbix 3.2.5| \n ------------------------------------------------------------ \n
+cd /tmp
+
+echo -e " ------------------------------------------------ _   _   _ \n ----------------------------------------------- / \\ / \\ / \\ \n ---------------------------------------------- ( i | G | Z ) \n ----------------------------------------------- \\_/ \\_/ \\_/ \n| __      __          _                   _            _\n| \\ \\    / /         | |                 | |          | | \n|  \\ \\  / ___ _ __ __| | __ _ _ __   __ _| |_ ___  ___| |__ \n|   \\ \\/ / _ | '__/ _\` |/ _\` | '_ \\ / _\` | __/ _ \\/ __| '_ \\ \n|    \\  |  __| | | (_| | (_| | | | | (_| | ||  __| (__| | | | \n|     \\/ \\___|_|  \\__,_|\\__,_|_| |_|\\__,_|\\__\\___|\\___|_| |_| \n| \n|                    consulting, training and implamentation \n|                                  comercial@verdanatech.com \n|                                        www.verdanatech.com \n|                                          +55 81 3091 42 52 \n ------------------------------------------------------------ \n| integraGZ.sh  - $glpiVersion and a lot plugins + $zabbixVersion | \n ------------------------------------------------------------ \n
 "
 sleep 5
 
+#
+# Functions
+#
+
+# Request for use integraGZ
+
 REQ_TO_USE ()
 {
-# Testa se o usuário é o root
-if [ $UID -ne 0 ]
-then
-	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize! You need root access to use this script." --fb 10 50
-	kill $$
-fi
+	clear
 
-# Testa a versão do sistema
-debianVersion=$(cat /etc/debian_version | cut -d"." -f1 )
+	# Test if the systen has which package
+	which whiptail 
 
-if [ $debianVersion -ne 8 ]
-then
-	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize! This script was developed for Debian 8.x. We will close the running now." --fb 10 50
-	kill $$
-fi
-}
-
-MAIN_MENU ()
-{
- 
-menu01Option=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --menu "Select a option!" --fb 15 50 6 \
-"1" "Verdanatech iGZ (complete installation)" \
-"2" "GLPI and plugins" \
-"3" "Zabbix + Verdanatech iGZ" \
-"4" "Only Verdanatech iGZ" \
-"5" "About" \
-"6" "Exit" 3>&1 1>&2 2>&3)
- 
-status=$?
-
-if [ $status != 0 ]; then
-	echo "
-You have selected out. Bye!
-"
-	exit;
-fi
-
-}
-
-ABOUT ()
-{
-clear
-
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-Copyright:
-- Verdanatech Solucoes em TI, $versionDate
-
-Licence:
-- GPL v3 <http://www.gnu.org/licenses/>
-
-Project partners:
-- Gustavo Soares <slot.mg@gmail.com>
-- Halexsandro Sales <halexsandro@gmail.com>
-- Janssen Lima <janssenreislima@gmail.com>
-"  --fb 0 0 0
-}
-
-
-#
-# Garante que o usuário tenha o whiptail instalado no computador
-
-WHIPTAIL_INSTALL () 
-{
-
-echo "deb http://ftp.de.debian.org/debian jessie main" > /etc/apt/sources.list
-
-apt-get update 2> /dev/null
-
-apt-get install whiptail
-
-clear
-
-[ ! -e /usr/bin/whiptail ] && { echo -e "
+	if ( $? -ne 0 )
+	then
+	
+			clear
+			echo -e "
 
  ###########################################################
 #                       WARNING!!!                          #
  -----------------------------------------------------------
 #                                                           #
 #                                                           #
-# There was an error installing the whiptail.               #
-#  - Check your internet connection.                        #
+# There was an error to use the whiptail package.           #
+#                                                           #
 #                                                           #
 # The whiptail package is required to run the integraGZ.sh  #
-# Please contact us: $devMail                               #
 #                                                           #
 #                                                           #
+ Please contact us: $devMail 
  ----------------------------------------------------------
       Verdanatech Solucoes em TI - www.verdanatech.com 
  ----------------------------------------------------------"; 
 
-	exit 1; }
+		kill $$
+
+	fi
+
+
+	# Test if the user is root
+
+	if [ $UID -ne 0 ]
+	then
+
+		whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize! You need be the root user access to use this script. Try 'su' our 'sudo su' commands!" --fb 15 55
+		kill $$
+	
+	fi
+
+case $ID in
+	
+	debian)
+	
+	case $VERSION_ID in
+		
+		9)
+		
+			whiptail --title "${TITULO}" --backtitle "${BANNER}" --yesno "System GNU/Linux Debian $VERSION_ID was detected. Are we correct?. " --yes-button "Yes" --no-button "No" --fb 10 50
+			
+			if [ $? -eq 1 ]
+			then
+				
+				whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize!\nThis script was developed for:\nCentOS 7, Debian 9 and Ubuntu 16.\nWe will close the running now." --fb 15 50
+				kill $$
+				
+			fi
+			
+		;;
+		
+	esac
+
+	;;
+	
+	centos)
+	
+	case $VERSION_ID in
+		
+		7)
+		
+			whiptail --title "${TITULO}" --backtitle "${BANNER}" --yesno "System GNU/Linux Centos $VERSION_ID was detected. Are we correct?. " --yes-button "Yes" --no-button "No" --fb 10 50
+			
+			if [ $? -eq 1 ]
+			then
+				
+				whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize!\nThis script was developed for:\nCentOS 7, Debian 8 and 9 and Ubuntu 16.\nWe will close the running now." --fb 15 50
+				kill $$
+				
+			fi
+			
+		;;
+		
+	esac
+
+	;;
+	
+	ubuntu)
+	
+	case $VERSION_ID in
+		
+		17)
+		
+			whiptail --title "${TITULO}" --backtitle "${BANNER}" --yesno "System GNU/Linux Ubuntu $VERSION_ID was detected. Are we correct?. " --yes-button "Yes" --no-button "No" --fb 10 50
+			
+			if [ $? -eq 1 ]
+			then
+				
+				whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize!\nThis script was developed for:\nCentOS 7, Debian 8 and 9 and Ubuntu 16.\nWe will close the running now." --fb 15 50
+				kill $$
+				
+			fi
+			
+		;;
+		
+	esac
+
+	;;
+	
+	*)
+	
+	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "We apologize!\nThis script was developed for:\nCentOS 7, Debian 9 and Ubuntu 16.\nWe will close the running now." --fb 15 50
+	
+	kill $$
+	
+	;;
+	
+esac
 
 }
 
+SET_REPOS ()
+{
+
+	clear 
+	
+	echo "Adding repositories, updating and upgrading the system..."
+	
+	sleep 1
+	
+	case $ID in
+
+		debian)
+		
+			case $VERSION_ID in 
+		
+				9)
+		
+					echo "deb http://security.debian.org/debian-security stretch/updates main" > /etc/apt/sources.list
+					echo "deb-src http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
+					echo "deb http://ftp.de.debian.org/debian stretch main" >> /etc/apt/sources.list
+					echo "deb http://httpredir.debian.org/debian/ stretch main contrib non-free" >> /etc/apt/sources.list
+					
+					apt-get update
+					apt-get upgrade -y
+					clear
+					
+				;;	
+				
+			esac
+			
+			;;
+					
+		centos)
+		
+			case $VERSION_ID in 
+				7) 
+				
+					rpm -Uvh https://mirror.webtatic.com/yum/el7/epel-release.rpm
+					yum -y update
+					yum -y upgrade
+					
+					clear
+				
+				;;
+				
+			esac
+			
+			;;
+		
+	esac	
+}
+
+LAMP_INSTALL ()
+{
+	
+	case $ID in
+		
+		debian)
+		
+			case $VERSION_ID in
+								
+				9)
+				
+					clear
+					echo "Intalling Debian packages for GLPI..."
+					sleep 1
+					apt-get -y install apache2 bsdtar bzip2 curl libapache2-mod-php7.0 libmariadbd-dev libmariadbd18 mariadb-server openjdk-8-jdk php-soap php7.0 php7.0-apcu php7.0-cli php7.0-common php7.0-curl php7.0-gd php7.0-imap php7.0-ldap php7.0-mysql php7.0-snmp php7.0-xmlrpc php7.0-xml php7.0-mbstring php7.0-bcmath
+				;;	
+					
+			esac
+			;;			
+
+		centos)
+		
+			case $VERSION_ID in
+				
+				7)
+				
+					clear
+					echo "Intalling CentOS packages for GLPI..."
+					sleep 1
+					yum -y install bsdtar git httpd httpd-devel mariadb-devel mariadb-server php php-apcu php-bcmath php-cli php-common php-gd php-imap php-ldap php-mbstring php-mysql php-opcache php-pdo php-xmlreader php-xmlrpc php-xmlwriter wget
+					
+					systemctl start httpd
+					systemctl enable httpd
+					
+					systemctl start mariadb
+					systemctl enable mariadb
+					
+					# Openning http port on Firewall
+					firewall-cmd --permanent --add-port=80/tcp
+					firewall-cmd --reload
+					setsebool -P httpd_can_network_connect on
+					setsebool -P httpd_can_network_connect_db on
+					setsebool -P httpd_can_sendmail on
+					
+					systemctl start httpd.service
+					systemctl enable httpd.service
+					
+					setenforce 0;
+
+				;;
+				
+			esac
+			;;
+		esac
+	
+	
+}
+
+ZABBIX_INSTALL ()
+{
+
+	# Enabling Zabbix TAG to On
+	zabbixInstallTag=1
+	
+	clear 
+	
+	case $ID in
+		
+		debian)
+		
+			case $VERSION_ID in
+								
+				9)
+					clear
+					echo "Intalling Debian packages for Zabbix..."
+					sleep 1
+					apt-get -y install sudo git python-pip libxml2 libxml2-dev curl fping libcurl3 libevent-dev libpcre3-dev libcurl3-gnutls libcurl3-gnutls-dev libcurl4-gnutls-dev build-essential libssh2-1-dev libssh2-1 libiksemel-dev libiksemel-utils libiksemel3 fping libopenipmi-dev snmp snmp-mibs-downloader libsnmp-dev #apache2 php7.0 php7.0-apcu libapache2-mod-php7.0 php7.0-gd php7.0-ldap php7.0-curl php7.0-mysql php7.0-imap php-soap  php7.0-cli php7.0-common php7.0-snmp php7.0-xmlrpc libmariadbd18 libmariadbd-dev snmpd ttf-dejavu-core libltdl7 libodbc1 libgnutls28-dev libldap2-dev openjdk-8-jdk unixodbc-dev mariadb-server
+					pip install zabbix-api
+				;;
+				
+			esac
+		;;
+		
+		centos)
+		
+			case $VERSION_ID in
+				
+				7)
+					clear
+					echo "Intalling CentOS 7 packages for Zabbix..."
+					sleep 1
+
+					yum -y install gcc python2-pip net-snmp net-snmp-devel net-snmp-utils net-snmp-libs iksemel-devel zlib-devel glibc-devel curl-devel automake libidn-devel openssl-devel rpm-devel OpenIPMI-devel libssh2-devel make fping libxml2-devel unixODBC unixODBC-devel
+
+					pip install zabbix-api
+					
+				;;
+				
+			esac
+		;;
+		
+	esac
+	
+	echo "Executing and compilling zabbix..."
+	sleep 1
+
+	## Zabbix install process
+
+	# Creating system user
+	groupadd zabbix
+	useradd -g zabbix -s /bin/false zabbix 
+	
+	sleep 1
+
+	# Geting and compilling zabbix
+	cd /tmp
+	
+	# Removing all zabbix old files if exist
+	rm zabbix* -Rf
+	
+	# Getting zabbix
+	wget -qO- $zabbixDownloadLink | tar -zxv
+	cd $(ls -g | grep zabbix- | grep ^d | rev | cut -d" " -f1 | rev)
+
+	./configure --enable-server --enable-agent --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --with-ssh2 --with-ldap --with-iconv --with-gnutls --with-unixodbc --with-openipmi --with-jabber=/usr --enable-ipv6 --prefix=/usr/local/zabbix
+	make install
+
+	# Preparando scripts de serviço	
+	ln -s /usr/local/zabbix/etc /etc/zabbix
+	
+	# Creating DataBase
+	DB_CREATE
+	
+	case $ID in
+		
+		debian)
+			
+			mv misc/init.d/debian/zabbix* /etc/init.d/
+			
+			sed -i 's/DAEMON=\/usr\/local\/sbin\/${NAME}*/DAEMON=\/usr\/local\/zabbix\/sbin\/${NAME}/' /etc/init.d/zabbix*server
+			sed -i 's/DAEMON=\/usr\/local\/sbin\/${NAME}*/DAEMON=\/usr\/local\/zabbix\/sbin\/${NAME}/' /etc/init.d/zabbix*agent*
+
+			update-rc.d zabbix-server defaults
+			update-rc.d zabbix-agent defaults
+			
+			cp /etc/init.d/zabbix-agent /etc/rc5.d/S02zabbix-agent
+			cp /etc/init.d/zabbix-server /etc/rc5.d/S02zabbix-server
+			
+		;;
+		
+		centos)
+		
+			mv misc/init.d/fedora/core5/zabbix* /etc/init.d/
+			
+			sed -i 's/ZABBIX_BIN="\/usr\/local\/sbin\/zabbix_agentd"/ZABBIX_BIN="\/usr\/local\/zabbix\/sbin\/zabbix_agentd"/' /etc/init.d/zabbix_agentd
+			sed -i 's/ZABBIX_BIN="\/usr\/local\/sbin\/zabbix_server"/ZABBIX_BIN="\/usr\/local\/zabbix\/sbin\/zabbix_server"/' /etc/init.d/zabbix_server
+
+			chkconfig --add zabbix_server
+			chkconfig --add zabbix_agentd
+			chkconfig --level 35 zabbix_server on
+			chkconfig --level 35 zabbix_agentd on
+
+			systemctl enable zabbix_agentd
+			systemctl enable zabbix_server
+						
+		;;
+		
+	esac
+	
+	chmod 775 /etc/init.d/zabbix*
+	
+	# Adequando arquivos de log de zabbix-server e zabbix-agent
+	mkdir /var/log/zabbix
+	chown root:zabbix /var/log/zabbix
+	chmod 775 /var/log/zabbix
+
+	sed -i 's/LogFile=\/tmp\/zabbix_agentd.log*/LogFile=\/var\/log\/zabbix\/zabbix_agentd.log/' /etc/zabbix/zabbix_agentd.conf
+	sed -i 's/LogFile=\/tmp\/zabbix_server.log*/LogFile=\/var\/log\/zabbix\/zabbix_server.log/' /etc/zabbix/zabbix_server.conf
+	
+	# Habilitando execução de comandos via Zabbix
+	sed -i 's/# EnableRemoteCommands=0*/EnableRemoteCommands=1/' /etc/zabbix/zabbix_agentd.conf
+	
+	# Criando atalhos para binários
+	ln -s /usr/local/zabbix/sbin/zabbix_agentd /sbin/zabbix_agentd
+	ln -s /usr/local/zabbix/sbin/zabbix_server /sbin/zabbix_server
+
+	ln -s /usr/local/zabbix/bin/zabbix_get /bin/zabbix_get
+	ln -s /usr/local/zabbix/bin/zabbix_sender /bin/zabbix_sender
+	
+	# Iniciando serviços zabbix
+		
+	case $ID in
+			debian)
+			
+				systemctl start zabbix-server
+				systemctl start zabbix-agent
+				
+			;;
+			
+			centos)
+			
+				systemctl start zabbix_server
+				systemctl start zabbix_agentd
+				
+			;;
+	esac
+
+	# Preparando o zabbix frontend
+	mv frontends/php /var/www/html/zabbix
+
+	SET_TIME_ZONE
+
+	case $ID in
+		debian)
+			echo -e "# Define /zabbix alias, this is the default\n#Created by Verdanatech integraGZ.sh\n<IfModule mod_alias.c>\n    Alias /zabbix /var/www/html/zabbix\n</IfModule>\n\n<Directory \"/var/www/html/zabbix\">\n\tOptions FollowSymLinks\n\tAllowOverride None\n\tOrder allow,deny\n\tAllow from all\n\n\tphp_value max_execution_time 300\n\tphp_value memory_limit 128M\n\tphp_value post_max_size 16M\n\tphp_value upload_max_filesize 2M\n\tphp_value max_input_time 300\n\tphp_value date.timezone $timePart1/$timePart2\n\tphp_value always_populate_raw_post_data -1\n</Directory>\n\n<Directory \"/var/www/html/zabbix/conf\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/api\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include/classes\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n" > /etc/apache2/conf-available/zabbix.conf
+		;;
+		
+		centos)
+			echo -e "# Define /zabbix alias, this is the default\n#Created by Verdanatech integraGZ.sh\n<IfModule mod_alias.c>\n    Alias /zabbix /var/www/html/zabbix\n</IfModule>\n\n<Directory \"/var/www/html/zabbix\">\n\tOptions FollowSymLinks\n\tAllowOverride None\n\tOrder allow,deny\n\tAllow from all\n\n\tphp_value max_execution_time 300\n\tphp_value memory_limit 128M\n\tphp_value post_max_size 16M\n\tphp_value upload_max_filesize 2M\n\tphp_value max_input_time 300\n\tphp_value date.timezone $timePart1/$timePart2\n\tphp_value always_populate_raw_post_data -1\n</Directory>\n\n<Directory \"/var/www/html/zabbix/conf\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/api\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include/classes\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n" > /etc/httpd/conf.d/zabbix.conf
+			
+		;;
+	esac
+			
+	# Set correct permissions to System resources
+	
+	chmod +s $(which ping)
+	chmod +s $(which fping)
+	chmod +s $(which ping6)
+	chmod +s $(which fping6)
+
+	# Restarting http server
+	
+	case $ID in
+		debian)
+		
+			# Enabling zabbix confgurations site
+			a2enconf zabbix
+			
+			chmod 775 /var/www/html/zabbix -Rf
+			chown www-data:www-data /var/www/html/zabbix -Rf
+			systemctl reload apache2
+		;;
+		
+		centos)
+			chmod 775 /var/www/html/zabbix -Rf
+			chown apache:apache /var/www/html/zabbix -Rf
+			systemctl restart httpd.service
+		;;
+		
+	esac	
+
+}
+
+DB_CREATE ()
+{
+
+	clear 
+	
+	echo "Making SQL ..."
+	echo "Creating Data Base for systems.."
+	sleep 2
+	
+	
+	test_connection=1
+	
+	while [ $test_connection != 0 ]
+	do
+		mysql -uroot $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "" 2> /dev/null
+		test_connection=$?
+
+		if [ $test_connection != 0 ]
+		then
+			rootPWD_SQL=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Enter the root user password for the SQL Server" --fb 10 50 3>&1 1>&2 2>&3)	
+		fi
+		
+	done
+	
+	if [ $zabbixInstallTag -eq 1 ]
+	then
+		zabbixPWD_SQL1=0
+		zabbixPWD_SQL2=1
+	
+		while [ $zabbixPWD_SQL1 != $zabbixPWD_SQL2 ]
+		do
+			zabbixPWD_SQL1=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Enter the user's password zabbix to the Database." --fb 10 50 3>&1 1>&2 2>&3) 
+			zabbixPWD_SQL2=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Confirm password zabbix user to the Database." --fb 10 50 3>&1 1>&2 2>&3)
+		
+			if [ $zabbixPWD_SQL1 != $zabbixPWD_SQL2 ]
+			then
+				whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
+					Error! Informed passwords do not match. Try again.
+				" --fb 0 0 0
+			fi
+		done
+	
+		# Criando a base de dados zabbix
+		echo "Creating zabbix database..."
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "create database zabbix character set utf8";
+		echo "Creating zabbix user at MariaDB Database..."
+		# Remove -p$rootPWD_SQL [deprecated]
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "create user 'zabbix'@'localhost' identified by '$zabbixPWD_SQL1'";
+		echo "Making zabbix user the owner to zabbix database..."
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "grant all privileges on zabbix.* to 'zabbix'@'localhost' with grant option";
+
+		sleep 2
+	
+		# Configurando /etc/zabbix/zabbix_server.conf
+	
+		sed -i 's/# DBPassword=/DBPassword='$zabbixPWD_SQL1'/' /etc/zabbix/zabbix_server.conf
+		sed -i 's/# FpingLocation=\/usr\/sbin\/fping/FpingLocation=\/usr\/bin\/fping/' /etc/zabbix/zabbix_server.conf
+	
+		# Avisar que a base está sendo populada....
+		# Popular base zabbix
+		
+		echo "Creating Zabbix Schema at MariaDB..."
+		mysql -uroot $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) zabbix < database/mysql/schema.sql
+		echo "Importing zabbix images to MariaDB..."
+		mysql -uroot $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) zabbix < database/mysql/images.sql
+		echo "Importing all Zabbix datas to MariaDB..."
+		mysql -uroot $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) zabbix < database/mysql/data.sql
+		sleep 1
+		
+		$zabbixInstallTag=0
+	fi
+	
+		if [ $glpiInstallTag -eq 1 ]
+		then
+			glpiPWD_SQL1=0
+			glpiPWD_SQL2=1
+	
+			while [ $glpiPWD_SQL1 != $glpiPWD_SQL2 ]
+			do
+				glpiPWD_SQL1=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Enter the user's password glpi to the Database." --fb 10 50 3>&1 1>&2 2>&3) 
+				glpiPWD_SQL2=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Confirm password glpi user to the Database." --fb 10 50 3>&1 1>&2 2>&3)
+		
+				if [ $glpiPWD_SQL1 != $glpiPWD_SQL2 ]
+				then
+					whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
+						Error! Informed passwords do not match. Try again.
+					" --fb 0 0 0
+		
+				fi
+			done
+	
+		# Criando a base de dados glpi
+		echo "Creating glpi database..."
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "create database glpi character set utf8";
+		echo "Creating glpi user at MariaDB Database..."
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "create user 'glpi'@'localhost' identified by '$glpiPWD_SQL1'";
+		echo "Making glpi user the owner to glpi database..."
+		mysql -u root $(if test $rootPWD_SQL ; then -p$rootPWD_SQL; fi) -e "grant all privileges on glpi.* to 'glpi'@'localhost' with grant option";
+		$glpiInstallTag=0
+	
+	fi
+
+}
+
+GLPI_INSTALL ()
+{
+
+# Enabling GLPI TAG to On
+glpiInstallTag=1
+
+clear 
+
+echo "Exec GLPI Install..."
+sleep 3
+
+	# GLPi installation process
+	# Downloading GLPI
+	cd /tmp
+	wget -qO- $glpiDownloadLink							| tar -zxv;			 mv glpi					/var/www/html/
+
+	# Downloading a lot GLPi Plugins
+	wget -qO- $glpiPluginOs								 | tar -zxv;		 mv os						  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginRacks							 | tar -zxv;		 mv racks					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDashboard						 | tar -zxv;		 mv dashboard				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginMydashboard					 | tar -zxv;		 mv mydashboard				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginSeasonality					 | tar -zxv;		 mv seasonality				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginSimcard						 | tar -zxv;		 mv simcard					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDatainjection					 | tar -zxv;		 mv datainjection			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginGenericobjects					 | tar -zxv;		 mv genericobject			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginAppliancesinventory			 | tar -zxv;		 mv appliances				  $GLPI_PLUGINS_DIR	
+	wget -qO- $glpiPluginCertificatesinventory			 | tar -zxv;		 mv certificates			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDatabasesinventory				 | tar -zxv;		 mv databases				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDomainsinventory				 | tar -zxv;		 mv domains					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginHumanresources					 | tar -zxv;		 mv resources				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginWebapplicationsinventory		 | tar -zxv;		 mv webapplications			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginBehaviors						 | tar -zxv;		 mv behaviors				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginEscalade						 | tar -zxv;		 mv escalade				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginHistoricalpurge				 | tar -zxv;		 mv purgelogs				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginFinancialreports				 | tar -zxv;		 mv financialreports		  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginAccountsinventory				 | tar -zxv;		 mv accounts				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginPdf							 | tar -zxv;		 mv pdf						  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginFusionInventory				 | tar -zxv;		 mv fusioninventory			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginMorereporting					 | tar -jxv;		 mv mreporting				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginOrdermanagement				 | tar -jxv;		 mv order					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginNetworkequipmentbackup			 | bsdtar -xvf-;	 mv nebackup-2.1.3			  $GLPI_PLUGINS_DIR/nebackup
+	wget -qO- $glpiPluginAutologin						 | bsdtar -xvf-;	 mv autologin				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginBrowsernotification			 | bsdtar -xvf-;	 mv browsernotification		  $GLPI_PLUGINS_DIR
+
+	chmod 775 /var/www/html/glpi -Rf
+	
+	case $ID in
+		debian)
+			
+			chown www-data:www-data /var/www/html/glpi -Rf
+			echo -e "<Directory \"/var/www/html/glpi\">\n\tAllowOverride All\n</Directory>" > /etc/apache2/conf-available/glpi.conf
+			a2enconf glpi.conf
+			systemctl reload apache2
+			
+		;;
+		
+		centos)
+			
+			echo -e "<Directory \"/var/www/html/glpi\">\n\tAllowOverride All\n</Directory>" > /etc/httpd/conf.d/glpi.conf
+			
+			chmod 775 /var/www/html/glpi -Rf
+			chown apache:apache /var/www/html/glpi -Rf
+			systemctl restart httpd.service
+		;;
+		
+	esac
+
+	# Creating Data Base
+	DB_CREATE
+}
+
+INTEGRA ()
+{
+
+	clear 
+	
+	cd /tmp
+	
+	# Install Verdanatech extra SNMP tools
+	
+	wget http://www.verdanatech.com/scripts/listaPortasSNMP.sh
+	mv listaPortasSNMP.sh /bin/
+	chmod 775 /bin/listaPortasSNMP.sh
+
+	wget http://www.verdanatech.com/scripts/zbTemplateBuilder.sh
+	mv zbTemplateBuilder.sh /bin/
+	chmod 775 /bin/zbTemplateBuilder.sh
+	
+	# Install integraGZ
+	
+	echo "Detecting externalScripts directory..."
+	externalScriptsDir=$(find / -iname externalscripts)
+	echo "ok..."
+	echo "Detecting frontend directory..."
+	zabbixFrontend=$(find / -name zabbix.php | sed 's/zabbix.php//')
+	echo "ok..."
+	
+	echo "Making Systems Integration with Verdanatech iGZ..."
+	sleep 1
+	
+	git clone $verdanatechGIT
+	
+	chmod 775 igz/*
+	
+	sed -i 's/ZABBIX_FRONTEND_DIR\//'$(echo $zabbixFrontend | sed 's/\//\\\//g')'/' igz/igz.php
+	sed -i 's/ZABBIX_EXTERNALSCRIPT_DIR/'$(echo $externalScriptsDir | sed 's/\//\\\//g')'/' igz/verdanatech_iGZ.php
+	
+	mv igz/igz.php $externalScriptsDir/
+	
+	mv igz/verdanatech_iGZ.php $zabbixFrontend/
+	
+	mv -f igz/verdanatech_iGZ_menu.inc.php $zabbixFrontend/include/menu.inc.php
+	
+	mv igz/verdanatech_processa_iGZ.php $zabbixFrontend/
+	
+	touch $zabbixFrontend/conf/igz.conf.php
+	
+	case $ID in
+		debian)
+			chown www-data $zabbixFrontend/conf/igz.conf.php
+		;;
+		
+		centos)
+			chown apache $zabbixFrontend/conf/igz.conf.php
+		;;
+		
+	esac
+	
+	chmod +x $zabbixFrontend/conf/igz.conf.php
+	
+	# Avaliar...estava no código mas não encontre o por que!?!
+	# mv zabbix-glpi/*zabbix* $externalScriptsDir
+	
+	chmod 775 $externalScriptsDir -Rf
+	
+	chown zabbix:zabbix $externalScriptsDir -Rf
+	
+	# Limpando diretório /tmp
+	rm -Rf /tmp/igz
+
+}
+
+MAIN_MENU ()
+{
+ 
+	menu01Option=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --menu "Select a option!" --fb 15 50 6 \
+	"1" "Verdanatech iGZ (complete installation)" \
+	"2" "GLPI and plugins" \
+	"3" "Zabbix + Verdanatech iGZ" \
+	"4" "Only Verdanatech iGZ" \
+	"5" "About" \
+	"6" "Exit" 3>&1 1>&2 2>&3)
+ 
+	status=$?
+
+	if [ $status != 0 ]; 
+	then
+	
+		echo "You have selected out. Bye!"
+		echo "Verdanatech Solucoes em TI..."
+		sleep 2
+		exit;
+
+	fi
+
+}
+
+ABOUT ()
+{
+
+	clear
+
+	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "Copyright:\n- Verdanatech Solucoes em TI, $versionDate\nLicence:\n- GPL v3 <http://www.gnu.org/licenses/>\nProject partners:\n- Gustavo Soares <slot.mg@gmail.com>\n- Halexsandro Sales <halexsandro@gmail.com>\n- Janssen Lima <janssenreislima@gmail.com>\n "  --fb 0 0 0
+}
 
 INFORMATION () 
 {
 
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-This script aims to perform the installation automated systems:
- - GLPI 9.1.3  [http://glpi-project.com]
-  -- With a lot plugins from community
- - Zabbix 3.2.5   [http://zabbix.com]
-  -- zabbix-server-mysql
-  -- zabbix-agent
-" --fb 0 0 0
+	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox " 
+		This script aims to perform the installation automated systems:
+		- $glpiVersion  [http://glpi-project.com]
+		  -- With a lot community plugins
+		- $zabbixVersion   [http://zabbix.com]
+		  -- zabbix-server-mysql
+		  -- zabbix-agent" 
+	--fb 0 0 0
 
 }
 
+END_MSG ()
+{
+	clear
+	
+	whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
 
+		Copyright:
+		- Verdanatech Solucoes em TI, $versionDate
+		Thank you for using our script. We are at your disposal to contact.
+		$devMail
 
-TIME_ZONE ()
+		PATHS: 
+		If you made installations, try to access 
+		GLPI, http://$serverAddress/glpi
+		Zabbix, try http://$serverAddress/zabbix
+		iGZ conf, zabbix menu Administration > Verdanatech iGZ 
 
+	"  --fb 0 0 0
+
+}
+
+SET_TIME_ZONE ()
+{
+	
 # Configura timezone do PHP para o servidor
 # Ref: http://php.net/manual/pt_BR/timezones.php
 # 
 
-{
-
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "Now we configure the server's timezone. Select the timezone that best meets!." --fb 10 50
+whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
+Now we configure the servers timezone. Select the timezone that best meets!" \
+--fb 10 50
 
 while [ -z $timePart1 ]
 do
@@ -181,7 +1067,8 @@ timePart1=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --radiolist \
 	"Australia" "" OFF \
 	"Europe" "" OFF \
 	"Indian" "" OFF \
-	"Pacific" "" OFF  3>&1 1>&2 2>&3)
+	"Pacific" "" OFF   \
+3>&1 1>&2 2>&3)
 done
 
 case $timePart1 in
@@ -741,767 +1628,70 @@ esac
 
 }
 
-SET_REPOS ()
-{
-
-clear 
-
-sleep 1
-
-echo "Add repositories, updatind and upgrading the system..."
-
-echo "deb http://ftp.br.debian.org/debian/ jessie main" > /etc/apt/sources.list
-echo "deb-src http://ftp.br.debian.org/debian/ jessie main" >> /etc/apt/sources.list
-
-echo "deb http://security.debian.org/ jessie/updates main" >> /etc/apt/sources.list
-echo "deb-src http://security.debian.org/ jessie/updates main" >> /etc/apt/sources.list
-
-echo "deb http://ftp.br.debian.org/debian/ jessie-updates main" >> /etc/apt/sources.list
-echo "deb-src http://ftp.br.debian.org/debian/ jessie-updates main" >> /etc/apt/sources.list
-
-echo "deb http://ftp.de.debian.org/debian/ jessie main non-free" >> /etc/apt/sources.list
-echo "deb http://security.debian.org/debian-security jessie/updates main" >> /etc/apt/sources.list
-
-apt-get update
-
-apt-get upgrade -y
-
-clear
-
-}
-
-GLPI_DEPS ()
-{
-
-clear
-echo "Intalling Debian packages for GLPI..."
-sleep 1
-
-apt-get -y install apache2 php5 php5-apcu libapache2-mod-php5 php5-gd php5-ldap php5-curl php5-mysql php5-imap php-soap  php5-cli php5-common php5-snmp php5-xmlrpc libmysqld-dev libmysqlclient-dev mysql-server
-
-}
-
-ZABBIX_DEPS ()
-{
-
-clear
-echo "Intalling Debian packages for Zabbix..."
-sleep 1
-
-apt-get -y install sudo git python-pip libxml2 libxml2-dev curl libcurl3 libcurl3-gnutls libcurl3-gnutls-dev libcurl4-gnutls-dev build-essential libssh2-1-dev libssh2-1 libiksemel-dev libiksemel-utils libiksemel3 fping libopenipmi-dev snmp snmp-mibs-downloader libsnmp-dev apache2 php5 php5-apcu libapache2-mod-php5 php5-gd php5-ldap php5-curl php5-mysql php5-imap php-soap  php5-cli php5-common php5-snmp php5-xmlrpc libmysqld-dev libmysqlclient-dev snmpd ttf-dejavu-core libltdl7 libodbc1 libgnutls28-dev libldap2-dev openjdk-7-jdk unixodbc-dev mysql-server
-
-pip install zabbix-api
-
-
-}
-
-ZABBIX_INSTALL ()
-{
-
-zabbixTag=1
-clear 
-
-echo "Exec Zabbix Install..."
-sleep 1
-
-
-	## Processo de instalação do Zabbix 3.2
-
-	# Criação de usuário e grupo do sistema
-
-	groupadd zabbix
-
-	useradd -g zabbix zabbix
-
-	# Baixando e compilando o zabbix
-
-	cd /tmp
-
-	wget http://www.verdanatech.com/scripts/listaPortasSNMP.sh
-	mv listaPortasSNMP.sh /bin/
-	chmod 775 /bin/listaPortasSNMP.sh
-
-	wget http://www.verdanatech.com/scripts/zbTemplateBuilder.sh
-	mv zbTemplateBuilder.sh /bin/
-	chmod 775 /bin/zbTemplateBuilder.sh
-
-	wget "https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.5/zabbix-3.2.5.tar.gz"
-	tar -zxvf zabbix-3.2.5.tar.gz
-	cd zabbix-3.2.5
-
-	./configure --enable-server --enable-agent --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --with-ssh2 --with-ldap --with-iconv --with-gnutls --with-unixodbc --with-openipmi --with-jabber=/usr --enable-ipv6 --prefix=/usr/local/zabbix
-
-	make install
-
-	# Preparando scripts de serviço
-
-	ln -s /usr/local/zabbix/etc /etc/zabbix
-
-	mv misc/init.d/debian/zabbix* /etc/init.d/
-
-	chmod 755 /etc/init.d/zabbix*
-	sed -i 's/DAEMON=\/usr\/local\/sbin\/${NAME}*/DAEMON=\/usr\/local\/zabbix\/sbin\/${NAME}/' /etc/init.d/zabbix-server
-	sed -i 's/DAEMON=\/usr\/local\/sbin\/${NAME}*/DAEMON=\/usr\/local\/zabbix\/sbin\/${NAME}/' /etc/init.d/zabbix-agent
-
-	update-rc.d zabbix-server defaults
-	update-rc.d zabbix-agent defaults
-
-	# Adequando arquivos de log de zabbix-server e zabbix-agent
-	mkdir /var/log/zabbix
-	chown root:zabbix /var/log/zabbix
-	chmod 775 /var/log/zabbix
-
-	sed -i 's/LogFile=\/tmp\/zabbix_agentd.log*/LogFile=\/var\/log\/zabbix\/zabbix_agentd.log/' /etc/zabbix/zabbix_agentd.conf
-	sed -i 's/LogFile=\/tmp\/zabbix_server.log*/LogFile=\/var\/log\/zabbix\/zabbix_server.log/' /etc/zabbix/zabbix_server.conf
-	
-	# Habilitando execução de comandos via Zabbix
-	sed -i 's/# EnableRemoteCommands=0*/EnableRemoteCommands=1/' /etc/zabbix/zabbix_agentd.conf
-
-	# Preparando o zabbix frontend
-	mv frontends/php /var/www/html/zabbix
-
-	TIME_ZONE
-
-	echo -e "# Define /zabbix alias, this is the default\n<IfModule mod_alias.c>\n    Alias /zabbix /var/www/html/zabbix\n</IfModule>\n\n<Directory \"/var/www/html/zabbix\">\n\tOptions FollowSymLinks\n\tAllowOverride None\n\tOrder allow,deny\n\tAllow from all\n\n\tphp_value max_execution_time 300\n\tphp_value memory_limit 128M\n\tphp_value post_max_size 16M\n\tphp_value upload_max_filesize 2M\n\tphp_value max_input_time 300\n\tphp_value date.timezone $timePart1/$timePart2\n\tphp_value always_populate_raw_post_data -1\n</Directory>\n\n<Directory \"/var/www/html/zabbix/conf\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/api\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n\n<Directory \"/var/www/html/zabbix/include/classes\">\n\tOrder deny,allow\n\tDeny from all\n\t<files *.php>\n\t\tOrder deny,allow\n\t\tDeny from all\n\t</files>\n</Directory>\n" > /etc/apache2/conf-available/zabbix.conf
-
-
-	chmod +s /bin/ping
-	chmod +s /usr/bin/fping
-	chmod +s /bin/ping6
-	chmod +s /usr/bin/fping6
-
-	a2enconf zabbix
-
-	# Reiniciando apache2
-
-	chmod 775 /var/www/html/zabbix -Rf
-	chown www-data:www-data /var/www/html/zabbix -Rf
-	service apache2 restart
-
-}
-
-GLPI_INSTALL ()
-{
-glpiTag=1
-clear 
-
-echo "Exec GLPI Install..."
-sleep 1
-
-	#
-	# Processo de instalação do GLPI
-	#
-
-	# Baixando o GLPI
-	###
-	wget https://github.com/glpi-project/glpi/releases/download/9.1.3/glpi-9.1.3.tgz
-	tar -zxvf glpi-9.1.3.tgz
-	mv glpi /var/www/html/
-
-	#
-	# Baixando o Racks
-
-	# This plugin allows you to create bays. Manage the placement of your materials in your bays. And so know the space and its power 
-	# 	consumption and heat dissipation.
-	# - Bay detail : height - width - depth - weight - number of U.
-	# - Front and back management.
-	# - Definition of model specifications and materials used (power consumption, numbre of power supply, calorific waste, flow Rate, 
-	# 	size (U), weight, depth)
-
-	wget https://github.com/InfotelGLPI/racks/releases/download/1.7.0/glpi-racks-1.7.0.tar.gz
-	tar -zxvf glpi-racks-1.7.0.tar.gz
-	mv racks /var/www/html/glpi/plugins/
-
-	#
-	# Baixando o DashBoard
-	# Dashboard. This plugin allows view statistics charts and reports from GLPI.
-	# -Can be used with helpdesk.
-
-	wget https://forge.glpi-project.org/attachments/download/2179/GLPI-dashboard_plugin-0.8.2.tar.gz
-	tar -zxvf GLPI-dashboard_plugin-0.8.2.tar.gz
-	mv dashboard /var/www/html/glpi/plugins/
-	
-	#
-	# Baixando o MyDashboard
-	# This plugin enables you to replace GLPI central by a dashboard
-	# https://raw.githubusercontent.com/InfotelGLPI/mydashboard/master/README.md
-
-	wget https://github.com/InfotelGLPI/mydashboard/releases/download/1.3.2/glpi-mydashboard-1.3.2.tar.gz
-	tar -zxvf glpi-mydashboard-1.3.2.tar.gz
-	mv mydashboard /var/www/html/glpi/plugins/mydashboard
-
-	#
-	# Baixando Seasonality
-	# This plugin allows you to create seasonality for specific categories and thus increase the urgency and therefore the priority of the ticket
-
-	wget https://github.com/InfotelGLPI/seasonality/releases/download/1.2.0/glpi-seasonality-1.2.0.tar.gz
-	tar -zxvf glpi-seasonality-1.2.0.tar.gz
-	mv seasonality /var/www/html/glpi/plugins/seasonality
-
-	#
-	# Baixando SimCard
-	# Add simcards management, link them to computers and phones
-
-	wget https://github.com/pluginsGLPI/simcard/releases/download/1.4.2/glpi-simcard-1.4.2.tar.gz
-	tar -zxvf glpi-simcard-1.4.2.tar.gz
-	mv simcard /var/www/html/glpi/plugins/simcard
-
-	#
-	# Baixando Data Injection
-	# It allows to create models of injection for a future re-use. It's been created in order to:
-	# - import data coming from others asset management softwares
-	# - inject electronic delivery forms
-	# Data to be imported using the plugains are:
-	# - inventory data (except softwares and licenses)
-	# - management data (contract, contact, supplier)
-	# - configuration data (user, group, entity)
-
-	wget https://github.com/pluginsGLPI/datainjection/releases/download/2.4.2/glpi-datainjection-2.4.2.tar.gz
-	tar -zxvf glpi-datainjection-2.4.2.tar.gz
-	mv datainjection /var/www/html/glpi/plugins/datainjection
-
-	#
-	# Baixando Generic Objects Management
-	# This plugin allows you to do the inventory of new item types without having to code, it allows you to create those new item types, it 	# allows type creation, manages available fields. Has full integration with the software (Helpdesk, loans, templates, etc.) 
-	# 	It has support  and connectivity for and with the File Injection plugin
-
-	wget https://github.com/pluginsGLPI/genericobject/releases/download/2.4.0/glpi-genericobject-2.4.0.tar.gz
-	tar -zxvf glpi-genericobject-2.4.0.tar.gz
-	mv genericobject /var/www/html/glpi/plugins/genericobject
-
-	#
-	# Baixando Appliances Inventory
-	# This plugin enables you to create appliance (several elements constituting a unit).
-	# -Appliances creation (composed by various inventory item)
-	# -Direct management from items
-	# -Integrated with Helpdesk
-	# NB : This plugin can be integrated in environment plugin and be used with archires plugin.
-
-	wget https://forge.glpi-project.org/attachments/download/2168/glpi-appliances-2.2.1.tar.gz
-	tar -zxvf glpi-appliances-2.2.1.tar.gz
-	mv appliances /var/www/html/glpi/plugins/appliances
-
-	#
-	# Baixando Certificates Inventory
-	# This plugin enables you to manage your certificates into your network and associate them with elements of the inventory.
-	# A mailing system allow to verify already expired or soon expired certificates.
-	# - Can be used with helpdesk
-	# - Can be integrated into Environment plugin.
-
- 	wget https://github.com/InfotelGLPI/certificates/releases/download/2.2.0/glpi-certificates-2.2.0.tar.gz
-	tar -zxvf glpi-certificates-2.2.0.tar.gz
-	mv certificates /var/www/html/glpi/plugins/certificates
-
-	#
-	# Baixando Databases Inventory
-	# This plugin enables you to manage the databases of your network and associate them with elements of the inventory.
-	# - Instances inventory
-	# - Scripts inventory.
-	# - Can be used with helpdesk
-	# -Can be integrated into Environment plugin.
-
-	wget https://github.com/InfotelGLPI/databases/releases/download/1.9.0/glpi-databases-1.9.0.tar.gz
-	tar -zxvf glpi-databases-1.9.0.tar.gz
-	mv databases /var/www/html/glpi/plugins/databases
-
-	#
-	# Baixando Domains Inventory
-	# This plugin enables you to manage the domain names of your network and associate them with elements of the inventory.
-	# A mailing system allow to verify already expired or soon expired domain names.
-	# -Can be used with helpdesk
-	# -Can be integrated into Environment plugin.
-
-	wget https://github.com/InfotelGLPI/domains/releases/download/1.8.0/glpi-domains-1.8.0.tar.gz
-	tar -zxvf glpi-domains-1.8.0.tar.gz
-	mv domains /var/www/html/glpi/plugins/domains
-
-	#
-	# Baixando Human Resources Management
-	# This plugin allows you to manage human resources to properly manage the allocation of material.
-	# - Management of various modes (private, public, SSII)
-	# Features :
-	# - Checklists management
-	# - Tasks management
-	# - Notifications system
-	# - Can be used with helpdesk
-	# - Can be used with badges plugin
-	# - Can be used with PDF plugin
-
-	wget https://github.com/InfotelGLPI/resources/releases/download/2.3.0/glpi-resources-2.3.0.tar.gz
-	tar -zxvf glpi-resources-2.3.0.tar.gz
-	mv resources /var/www/html/glpi/plugins/resources
-
-	#
-	# Baixando Web Applications Inventory
-	# This plugin allows you to list your Web applications of your network and associate them with elements of the inventory.
-	# - Can be used with helpdesk,
-	# - Can be used with PDF plugin,
-	# - Can be used with Environment plugin
-
- 	wget https://github.com/InfotelGLPI/webapplications/releases/download/2.3.0/glpi-webapplications-2.3.0.tar.gz
-	tar -zxvf glpi-webapplications-2.3.0.tar.gz
-	mv webapplications /var/www/html/glpi/plugins/webapplications
-
-	#
-	# Baixando Order Management
-	# This plugin allows you to manage order management within GLPI :
-	#	- Products references management
-	#	- Order management (with approval workflow)
-	#	- Budgets management
-
-	wget https://github.com/pluginsGLPI/order/releases/download/1.9.6/glpi-order-1.9.6.tar.bz2
-	tar -jxvf glpi-order-1.9.6.tar.bz2
-	mv order /var/www/html/glpi/plugins/order
-
-	#
-	# Baixando Behaviors
-	# This plugin allows you to add optional behaviors to GLPI.
-	# - mandatory fields
-	# - requester's group
-	# - ticket's number format
-	# - etc
-
-	wget https://forge.glpi-project.org/attachments/download/2178/glpi-behaviors-1.3.tar.gz
-	tar -zxvf glpi-behaviors-1.3.tar.gz
-	mv behaviors /var/www/html/glpi/plugins/behaviors
-
-	#
-	# Baixando Escalade
-	# This plugin simplifies the ticket escalation to different groups
-	# It adds the following features :
-	#
-	#    Display a visual history of the assignement groups on a ticket.
-	#    Rapid escalation to a group present in history.
-	#    Assign initiator group when ticket solution provided.
-	#    provide automatic assignment of tickets on ticket category change.
-	#    Fast cloning of ticket.
-	#    Closing cloned tickets simultaneously.
-	#    Take the first or last group of technician (on ticket modification).	
-	#    New button for rapid self-assignment of a ticket.
-
-	wget https://github.com/pluginsGLPI/escalade/releases/download/2.1.0/glpi-escalade-2.1.0.tar.gz
-	tar -zxvf glpi-escalade-2.1.0.tar.gz
-	mv escalade /var/www/html/glpi/plugins/escalade
-
-	#
-	# Baixando Historical purge
-	# This plugin enables historical purge
-
-	wget https://github.com/pluginsGLPI/purgelogs/releases/download/1.2.2/glpi-purgelogs-1.2.2.tar.gz
-	tar -zxvf glpi-purgelogs-1.2.2.tar.gz
-	mv purgelogs /var/www/html/glpi/plugins/purgelogs
-
-	#
-	# Baixando Financial Reports
-	# Financial report : Asset situation. This plugin allows you to generate a financial report (asset situation) for a given date.
-	# - Export Csv, Pdf
-
-	wget https://github.com/InfotelGLPI/financialreports/releases/download/2.3.0/glpi-financialreports-2.3.0.tar.gz
-	tar -zxvf glpi-financialreports-2.3.0.tar.gz
-	mv financialreports /var/www/html/glpi/plugins/financialreports
-
-	#
-	# Baixando Accounts Inventory
-	# Manage accounts (login / password).
-	# This plugin enables you to manage the accounts of your network and associate them with elements of the inventory.
-	# The accounts are crypted in database with hash and crypting key.
-	# A mailing system allow to verify expired accounts.
-	
-	wget https://github.com/InfotelGLPI/accounts/releases/download/2.2.0/glpi-accounts-2.2.0.tar.gz
-	tar -zxvf glpi-accounts-2.2.0.tar.gz
-	mv  accounts /var/www/html/glpi/plugins/accounts
-
-	#
-	# Baixando More Reporting
-	# Add (and develop) new graphical reports for glpi.
-	# 
-	# This plugins embed a set of new statistics reports :
-	# 
-	#     Helpdesk
-	#         Backlog
-	#         Ticket age
-	#         Tickets per group or technician
-	#         Top categories or requester groups
-	#         Number of group changes
-	#         5 SLA reports
-	# 
-	#     Inventory
-	#         Os versions and distributions
-	#         Top manufacturers
-	#         Top types (server, laptop, ...)
-	#         Top status
-	#         Age of computers
-	#         FusionInventory agents
-	# 
-	#     Logs distribution
-	# 
-	# You can also develop new report with the framework of plugin.
-	# See documentation : https://github.com/PluginsGLPI/mreporting/wiki
-
-
-	wget https://github.com/pluginsGLPI/mreporting/releases/download/1.3.1/glpi-mreporting-1.3.1.tar.bz2
-	tar -jxvf glpi-mreporting-1.3.1.tar.bz2
-	mv mreporting /var/www/html/glpi/plugins/
-
-
-	#
-	# Baixando PDF
-	# 
-	# This plugin allow you to select and export informations of an equipment to PDF file.
-	# - equipment types from GLPI
-	# - equipment types from some plugins
-	# - additional data from some plugins
-	# - one or many object(s) in a file
-
-	wget https://forge.glpi-project.org/attachments/download/2171/glpi-pdf-1.1.tar.gz
-	tar -zxvf glpi-pdf-1.1.tar.gz
-	mv pdf /var/www/html/glpi/plugins/
-
-	#
-	# Baixando Network Equipment Backup
-	# 
-	# This plugin allows you to back up the configuration of the network devices on TFTP server.
-
-	wget https://github.com/jsamaniegog/nebackup/archive/2.1.2.zip
-	unzip 2.1.2.zip
-	mv nebackup-2.1.2 /var/www/html/glpi/plugins/nebackup
-
-	#
-	# Baixando Auto Login
-	# 
-	# This plugin add support to "Remember me" function in GLPI and skip the login page if you are already authenticated
-	# Go to Configuration > General > Auto Login to configure remember time and default checkbox state
-
-	wget https://github.com/edgardmessias/autologin/releases/download/2.1.1/autologin.zip
-	unzip autologin.zip
-	mv autologin /var/www/html/glpi/plugins/
-
-	#
-	# Baixando Father
-	# 
-	# Adicionando um campo para bilhetes GLPI (estendendo CommonDBTM).
-	#     O campo "pai" é visível e editável no cabeçalho do objeto (abaixo do título).
-	#     O campo "pai" pode ser pesquisado e exibido na lista de objetos
-
-	wget https://github.com/Probesys/glpi-plugins-father/archive/v1.0.1.zip
-	unzip v1.0.1.zip
-	mv glpi-plugins-father-1.0.1 /var/www/html/glpi/plugins/father
-
-	#
-	# Baixando Browser Notification 
-	# 
-	# This plugin allow your browser to show notifications for GLPI
-
-	wget https://github.com/edgardmessias/browsernotification/releases/download/1.1.8/browsernotification.zip
-	unzip browsernotification.zip
-	mv browsernotification /var/www/html/glpi/plugins/
-
-
-	#
-	# Baixando FusionInventory
-	# FusionInventory is a free and open source project providing hardware, software inventory, software deployment and network 
-	#	discovery to the IT asset management and helpdesk software called GLPI.
-	# "FusionInventory for GLPI" is a collection of plugins communicating with some agents (FusionInventory-Agent), deployed on computers
-	#
-	#    FusionInventory Core: provides core functionnalities:
-	#        Communication with inventory and network discovery agents.
-	#        Tasks management and scheduling.
-	#        Wake on LAN.
-	#        Centralized rules for assets import in GLPI.
-	#        Unknown devices management (temporary zone, in GLPI, before real asset management).
-	#
-	#    FusionInventory Inventory:
-	#        Local inventory for computers (hardware, software, antivirus).
-	#        Handle and update computers already in GLPI.
-	#
-	#    FusionInventory SNMP:
-	#        Network discovery, unknown devices management (using FusionInventory core plugin).
-	#        Remote network devices and printers (thanks to the SNMP protocol).	
-	#        Get network port informations, VLANs, link between switchs network ports and assets already in GLPI (computers, network printers, 		
-	#		network devices, etc.).
-	#        Change history and reports for each network port.
-	#        Printers cartridges' ink levels, daily page counters and reports.
-
-	wget "https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.1%2B1.1/fusioninventory-for-glpi_9.1.1.1.tar.gz"
-	tar -zxvf "fusioninventory-for-glpi_9.1.1.1.tar.gz"
-	mv fusioninventory /var/www/html/glpi/plugins/fusioninventory
-
-	# Adequando Apache
-	
-	echo -e "<Directory \"/var/www/html/glpi\">\n\tAllowOverride All\n</Directory>" > /etc/apache2/conf-available/glpi.conf
-
-	a2enconf glpi.conf
-
-	# Reiniciando apache2
-
-	chmod 775 /var/www/html/glpi -Rf
-	chown www-data:www-data /var/www/html/glpi -Rf
-	service apache2 restart
-
-
-}
-
-
-DB_CREATE ()
-{
-
-
-clear 
-
-echo "Making SQL.."
-echo "Creating Data Base for systems.."
-sleep 1
-
-
-test_connection=1
-
-while [ $test_connection != 0 ]
-do
-
-rootPWD_SQL=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Enter the root user password for the SQL Server" --fb 10 50 3>&1 1>&2 2>&3) 
-
-mysql -uroot -p$rootPWD_SQL -e "" 2> /dev/null
-
-test_connection=$?
-
-	if [ $test_connection != 0 ]
-	then
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-
-The root user password entered is not valid. Try again!
-" --fb 0 0 0
-	fi
-done
-
-if [ $zabbixTag -eq 1 ]
-then
-
-zabbixPWD_SQL1=0
-zabbixPWD_SQL2=1
-
-while [ $zabbixPWD_SQL1 != $zabbixPWD_SQL2 ]
-do
-
-	zabbixPWD_SQL1=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Step 4 - Enter the user's password zabbix to the Database." --fb 10 50 3>&1 1>&2 2>&3) 
-
-	zabbixPWD_SQL2=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Step 4 - Confirm password zabbix user to the Database." --fb 10 50 3>&1 1>&2 2>&3)
-	
-	if [ $zabbixPWD_SQL1 != $zabbixPWD_SQL2 ]
-	then
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-
-Step 4 - Error! Informed passwords do not match. Try again.
-" --fb 0 0 0
-
-	fi
-done
-
-	# Criando a base de dados zabbix
-	echo "Creating zabbix database..."
-	mysql -u root -p$rootPWD_SQL -e "create database zabbix character set utf8";
-	echo "Creating zabbix user at MariaDB Database..."
-	mysql -u root -p$rootPWD_SQL -e "create user 'zabbix'@'localhost' identified by '$zabbixPWD_SQL1'";
-	echo "Making zabbix user the owner to glpi database..."
-	mysql -u root -p$rootPWD_SQL -e "grant all on zabbix.* to zabbix with grant option";
-	sleep 2
-
-	# Configurando /etc/zabbix/zabbix_server.conf
-
-	sed -i 's/# DBPassword=/DBPassword='$zabbixPWD_SQL1'/' /etc/zabbix/zabbix_server.conf
-	sed -i 's/# FpingLocation=\/usr\/sbin\/fping/FpingLocation=\/usr\/bin\/fping/' /etc/zabbix/zabbix_server.conf
-
-	# Avisar que a base está sendo populada....
-	# Popular base zabbix
-
-	cd database/mysql/
-	echo "Creating Zabbix Schema at MariaDB..."
-	mysql -uroot -p$rootPWD_SQL zabbix < schema.sql
-	echo "Importing zabbix images to MariaDB..."
-	mysql -uroot -p$rootPWD_SQL zabbix < images.sql
-	echo "Importing all Zabbix datas to MariaDB..."
-	mysql -uroot -p$rootPWD_SQL zabbix < data.sql
-	sleep 1
-
-	# Inicializando os serviços 
-	
-	echo "Now re-initiate services Zabbix Server and Agent..."
-	service zabbix-agent start
-	service zabbix-server start
-
-fi
-
-if [ $glpiTag -eq 1 ]
-then
-
-glpiPWD_SQL1=0
-glpiPWD_SQL2=1
-
-while [ $glpiPWD_SQL1 != $glpiPWD_SQL2 ]
-do
-
-	glpiPWD_SQL1=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Step 4 - Enter the user's password glpi to the Database." --fb 10 50 3>&1 1>&2 2>&3) 
-
-	glpiPWD_SQL2=$(whiptail --title "${TITULO}" --backtitle "${BANNER}" --passwordbox "Step 4 - Confirm password glpi user to the Database." --fb 10 50 3>&1 1>&2 2>&3)
-	
-	if [ $glpiPWD_SQL1 != $glpiPWD_SQL2 ]
-	then
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-
-Step 4 - Error! Informed passwords do not match. Try again.
-" --fb 0 0 0
-
-	fi
-done
-
-	# Criando a base de dados glpi
-	echo "Creating glpi database..."
-	mysql -u root -p$rootPWD_SQL -e "create database glpi character set utf8";
-	echo "Creating glpi user at MariaDB Database..."
-	mysql -u root -p$rootPWD_SQL -e "create user 'glpi'@'localhost' identified by '$glpiPWD_SQL1'";
-	echo "Making glpi user the owner to glpi database..."
-	mysql -u root -p$rootPWD_SQL -e "grant all on glpi.* to glpi with grant option";
-	sleep 2
-
-fi
-
-}
-
-INTEGRA ()
-{
-
-clear 
-
-cd /tmp 
-
-echo "Detecting externalScripts directory..."
-externalScriptsDir=$(find / -iname externalscripts)
-echo "ok..."
-echo "Detecting frontend directory..."
-zabbixFrontend=$(find / -name zabbix.php | sed 's/zabbix.php//')
-echo "ok..."
-
-echo "Making Systems Integration with Verdanatech iGZ..."
-sleep 1
-
-git clone $verdanatechGIT
-
-chmod 775 igz/*
-
-sed -i 's/ZABBIX_FRONTEND_DIR\//'$(echo $zabbixFrontend | sed 's/\//\\\//g')'/' igz/igz.php
-sed -i 's/ZABBIX_EXTERNALSCRIPT_DIR/'$(echo $externalScriptsDir | sed 's/\//\\\//g')'/' igz/verdanatech_iGZ.php
-
-mv igz/igz.php $externalScriptsDir/
-
-mv igz/verdanatech_iGZ.php $zabbixFrontend/
-
-mv igz/verdanatech_iGZ_menu.inc.php $zabbixFrontend/include/menu.inc.php
-
-mv igz/verdanatech_processa_iGZ.php $zabbixFrontend/
-
-touch $zabbixFrontend/conf/igz.conf.php
-
-chown www-data $zabbixFrontend/conf/igz.conf.php
-chmod +x $zabbixFrontend/conf/igz.conf.php
-
-mv zabbix-glpi/*zabbix* $externalScriptsDir
-
-chmod 775 $externalScriptsDir -Rf
-
-chown zabbix:zabbix $externalScriptsDir -Rf
-
-}
-
-END_MSG ()
-{
-clear
-
-whiptail --title "${TITULO}" --backtitle "${BANNER}" --msgbox "
-
-Copyright:
-- Verdanatech Solucoes em TI, $versionDate
-Thank you for using our script. We are at your disposal to contact.
-$devMail
-
-PATHS: 
-If you made installations, try to access 
-GLPI, http://$serverAddress/glpi
-Zabbix, try http://$serverAddress/zabbix
-iGZ conf, zabbix menu (Administration > Verdanatech iGZ )
-
-"  --fb 0 0 0
-
-}
-
-
-
 # Script start
 
 clear
 
-[ ! -e /usr/bin/whiptail ] && { INSTALA_WHIPTAIL; }
+[ ! -e /usr/bin/whiptail ] && { echo 'ERRO! Not found WHIPTAIL PKG'; exit; }
 
 MAIN_MENU
 
 while true
 do
-case $menu01Option in
+	case $menu01Option in
 
-	1)
-		# instalação completa
-		REQ_TO_USE
-		SET_REPOS
-		GLPI_DEPS
-		GLPI_INSTALL
-		ZABBIX_DEPS
-		ZABBIX_INSTALL
-		DB_CREATE
-		INTEGRA
-		END_MSG
-		kill $$
-	;;
+		1)
+			# instalação completa
+			REQ_TO_USE
+			SET_REPOS
+			LAMP_INSTALL
+			ZABBIX_INSTALL
+			GLPI_INSTALL
+			INTEGRA
+			END_MSG
+			kill $$
+		;;
 	
-	2)
-		# Instala apenas GLPI
-		REQ_TO_USE
-		SET_REPOS
-		GLPI_DEPS
-		GLPI_INSTALL
-		DB_CREATE
-		END_MSG
-		kill $$
-	;;
-		
+		2)
+			# Instala apenas GLPI
+			REQ_TO_USE
+			SET_REPOS
+			LAMP_INSTALL
+			GLPI_INSTALL
+			END_MSG
+			kill $$
+		;;	
 
-	3)
-		# Zabbix + iGZ
-		REQ_TO_USE
-		SET_REPOS
-		ZABBIX_DEPS
-		ZABBIX_INSTALL
-		DB_CREATE
-		INTEGRA
-		END_MSG
-		kill $$
-	;;
+		3)
+			# Zabbix + VerdanatechiGZ
+			REQ_TO_USE
+			SET_REPOS
+			LAMP_INSTALL
+			ZABBIX_INSTALL
+			INTEGRA
+			END_MSG
+			kill $$
+		;;
 	
-	4)
-		# Apenas iGZ
-		INTEGRA
-		END_MSG
-		kill $$
-	;;
+		4)
+			# Apenas iGZ
+			INTEGRA
+			END_MSG
+			kill $$
+		;;
 	
-	5)
-		# Sobre
-		ABOUT
-		MAIN_MENU
-	;;
+		5)
+			# Sobre
+			ABOUT
+			MAIN_MENU
+		;;
 	
-	6)
-		# Sair
-		END_MSG
-		kill $$
-	;;
+		6)
+			# Sair
+			END_MSG
+			kill $$
+		;;
 
-esac
+	esac
+
 done
