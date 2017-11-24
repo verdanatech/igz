@@ -2,8 +2,8 @@
 # -------------------------------------------------------------------------
 # @Programa 
 # 	@name: integraGZ.sh
-#	@versao: 2.2.1
-#	@Data 08 de Setembro de 2017
+#	@versao: 2.2.2
+#	@Data 23 de Novembro de 2017
 #	@Copyright: Verdanatech Soluções em TI, 2016 - 2017
 #	@Copyright: Pillares Consulting, 2016
 # --------------------------------------------------------------------------
@@ -26,8 +26,8 @@
 # Variables Declaration
 #
 
-versionDate="September 08, 2017"
-TITULO="Verdanatech iGZ - v.2.2.1"
+versionDate="November 23, 2017"
+TITULO="Verdanatech iGZ - v.2.2.2"
 BANNER="http://www.verdanatech.com"
 
 devMail="halexsandro.sales@verdanatech.com"
@@ -37,8 +37,8 @@ source /etc/os-release
 
 serverAddress=$(hostname -I | cut -d' ' -f1)
 
-glpiVersion="GLPI 9.1.6"
-zabbixVersion="Zabbix 3.4.1"
+glpiVersion="GLPI 9.2.1"
+zabbixVersion="Zabbix 3.4.4"
 
 verdanatechGIT="https://github.com/verdanatech/igz"
 
@@ -56,46 +56,42 @@ GLPI_DIR="/var/www/html/glpi"
 GLPI_PLUGINS_DIR=$GLPI_DIR/plugins
 
 # Zabbix link
-zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.4.1/zabbix-3.4.1.tar.gz"
+zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.4.4/zabbix-3.4.4.tar.gz"
 
 # GLPi link
-glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.1.6/glpi-9.1.6.tgz"
+glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.2.1/glpi-9.2.1.tgz"
 
 ## GLPi Plugins Links
 
 # Plugin OS 0.0.7
-glpiPluginOs="https://ufpr.dl.sourceforge.net/project/glpi-os/glpi-os-0.0.7.tar.gz"
+glpiPluginOs="https://ufpr.dl.sourceforge.net/project/glpi-os/GLPI_9.2.X/glpi-os-0.0.8.tar.gz"
 
-# Plugin Rack 1.7.0
+# Plugin Rack 1.8.0
 # This plugin allows you to create bays. Manage the placement of your materials in your bays. And so know the space and its power 
 # 	consumption and heat dissipation.
 # - Bay detail : height - width - depth - weight - number of U.
 # - Front and back management.
 # - Definition of model specifications and materials used (power consumption, numbre of power supply, calorific waste, flow Rate, 
 # 	size (U), weight, depth)
-glpiPluginRacks="https://github.com/InfotelGLPI/racks/releases/download/1.7.0/glpi-racks-1.7.0.tar.gz"
+glpiPluginRacks="https://github.com/InfotelGLPI/racks/releases/download/1.8.0/glpi-racks-1.8.0.tar.gz"
 
-# Plugin Dashboard 0.8.6
+# Plugin Dashboard 0.8.8
 # This plugin allows you to create bays. Manage the placement of your materials in your bays. And so know the space and its power 
 # 	consumption and heat dissipation.
 # - Bay detail : height - width - depth - weight - number of U.
 # - Front and back management.
 # - Definition of model specifications and materials used (power consumption, numbre of power supply, calorific waste, flow Rate, 
 # 	size (U), weight, depth)
-glpiPluginDashboard="https://forge.glpi-project.org/attachments/download/2197/GLPI-dashboard_plugin-0.8.6.tar.gz"
+glpiPluginDashboard="https://forge.glpi-project.org/attachments/download/2202/GLPI-dashboard_plugin-0.8.8.tar.gz"
 
-# Plugin Mydashboard 1.3.2
+# Plugin Mydashboard 1.4.0
 # This plugin enables you to replace GLPI central by a dashboard
 # https://raw.githubusercontent.com/InfotelGLPI/mydashboard/master/README.md
-glpiPluginMydashboard="https://github.com/InfotelGLPI/mydashboard/releases/download/1.3.2/glpi-mydashboard-1.3.2.tar.gz"
+glpiPluginMydashboard="https://github.com/InfotelGLPI/mydashboard/releases/download/1.4.0/glpi-mydashboard-1.4.0.tar.gz"
 
 # Plugin Seasonality 1.2.0
 # This plugin allows you to create seasonality for specific categories and thus increase the urgency and therefore the priority of the ticket
-glpiPluginSeasonality="https://github.com/InfotelGLPI/seasonality/releases/download/1.2.0/glpi-seasonality-1.2.0.tar.gz"
-
-# Plugin SimCard 1.4.2
-# Add simcards management, link them to computers and phones
-glpiPluginSimcard="https://github.com/pluginsGLPI/simcard/releases/download/1.4.2/glpi-simcard-1.4.2.tar.gz"
+# glpiPluginSeasonality="https://github.com/InfotelGLPI/seasonality/releases/download/1.2.0/glpi-seasonality-1.2.0.tar.gz"
 
 # Plugin Data Injection 2.4.2
 # It allows to create models of injection for a future re-use. It's been created in order to:
@@ -105,44 +101,44 @@ glpiPluginSimcard="https://github.com/pluginsGLPI/simcard/releases/download/1.4.
 # - inventory data (except softwares and licenses)
 # - management data (contract, contact, supplier)
 # - configuration data (user, group, entity)
-glpiPluginDatainjection="https://github.com/pluginsGLPI/datainjection/releases/download/2.4.2/glpi-datainjection-2.4.2.tar.gz"
+# glpiPluginDatainjection="https://github.com/pluginsGLPI/datainjection/releases/download/2.4.2/glpi-datainjection-2.4.2.tar.gz"
 
 # Plugin Generic Objects 2.4.0
 # This plugin allows you to do the inventory of new item types without having to code, it allows you to create those new item types, it 	
 # allows type creation, manages available fields. Has full integration with the software (Helpdesk, loans, templates, etc.) 
 # 	It has support  and connectivity for and with the File Injection plugin
-glpiPluginGenericobjects="https://github.com/pluginsGLPI/genericobject/releases/download/2.4.0/glpi-genericobject-2.4.0.tar.gz"
+# glpiPluginGenericobjects="https://github.com/pluginsGLPI/genericobject/releases/download/2.4.0/glpi-genericobject-2.4.0.tar.gz"
 
-# Plugin Appliances Inventory 2.2.1
+# Plugin Appliances Inventory 2.3.0
 # Baixando Appliances Inventory
 # This plugin enables you to create appliance (several elements constituting a unit).
 # -Appliances creation (composed by various inventory item)
 # -Direct management from items
 # -Integrated with Helpdesk
 # NB : This plugin can be integrated in environment plugin and be used with archires plugin.
-glpiPluginAppliancesinventory="https://forge.glpi-project.org/attachments/download/2168/glpi-appliances-2.2.1.tar.gz"
+glpiPluginAppliancesinventory="https://forge.glpi-project.org/attachments/download/2203/glpi-appliances-2.3.0.tar.gz"
 
 # Plugin Certificates Inventory 2.2.1
 # This plugin enables you to manage your certificates into your network and associate them with elements of the inventory.
 # A mailing system allow to verify already expired or soon expired certificates.
 # - Can be used with helpdesk
 # - Can be integrated into Environment plugin.
-glpiPluginCertificatesinventory="https://github.com/InfotelGLPI/certificates/releases/download/2.2.2/glpi-certificates-2.2.2.tar.gz"
+# glpiPluginCertificatesinventory="https://github.com/InfotelGLPI/certificates/releases/download/2.2.2/glpi-certificates-2.2.2.tar.gz"
 
-# Plugin Databases Inventory 1.9.0
+# Plugin Databases Inventory 2.0.0
 # This plugin enables you to manage the databases of your network and associate them with elements of the inventory.
 # - Instances inventory
 # - Scripts inventory.
 # - Can be used with helpdesk
 # -Can be integrated into Environment plugin.
-glpiPluginDatabasesinventory="https://github.com/InfotelGLPI/databases/releases/download/1.9.0/glpi-databases-1.9.0.tar.gz"
+glpiPluginDatabasesinventory="https://github.com/InfotelGLPI/databases/releases/download/2.0.0/glpi-databases-2.0.0.tar.gz"
 
-# Plugin Domains Inventory 1.8.1
+# Plugin Domains Inventory 1.9.0
 # This plugin enables you to manage the domain names of your network and associate them with elements of the inventory.
 # A mailing system allow to verify already expired or soon expired domain names.
 # -Can be used with helpdesk
 # -Can be integrated into Environment plugin.
-glpiPluginDomainsinventory="https://github.com/InfotelGLPI/domains/releases/download/1.8.1/glpi-domains-1.8.1.tar.gz"
+glpiPluginDomainsinventory="https://github.com/InfotelGLPI/domains/releases/download/1.9.0/glpi-domains-1.9.0.tar.gz"
 
 # Plugin Human Resources Management 2.3.1
 # This plugin allows you to manage human resources to properly manage the allocation of material.
@@ -154,31 +150,31 @@ glpiPluginDomainsinventory="https://github.com/InfotelGLPI/domains/releases/down
 # - Can be used with helpdesk
 # - Can be used with badges plugin
 # - Can be used with PDF plugin
-glpiPluginHumanresources="https://github.com/InfotelGLPI/resources/releases/download/2.3.1/glpi-resources-2.3.1.tar.gz"
+# glpiPluginHumanresources="https://github.com/InfotelGLPI/resources/releases/download/2.3.1/glpi-resources-2.3.1.tar.gz"
 
-# Plugin Web Applications Inventory 2.3.1
+# Plugin Web Applications Inventory 2.4.0
 # This plugin allows you to list your Web applications of your network and associate them with elements of the inventory.
 # - Can be used with helpdesk,
 # - Can be used with PDF plugin,
 # - Can be used with Environment plugin
-glpiPluginWebapplicationsinventory="https://github.com/InfotelGLPI/webapplications/releases/download/2.3.1/glpi-webapplications-2.3.1.tar.gz"
+glpiPluginWebapplicationsinventory="https://github.com/InfotelGLPI/webapplications/releases/download/2.4.0/glpi-webapplications-2.4.0.tar.gz"
 
 # Plugin Order Management 1.9.6
 # This plugin allows you to manage order management within GLPI :
 #	- Products references management
 #	- Order management (with approval workflow)
 #	- Budgets management
-glpiPluginOrdermanagement="https://github.com/pluginsGLPI/order/releases/download/1.9.6/glpi-order-1.9.6.tar.bz2"
+# glpiPluginOrdermanagement="https://github.com/pluginsGLPI/order/releases/download/1.9.6/glpi-order-1.9.6.tar.bz2"
 
-# Plugin Behaviors 1.5
+# Plugin Behaviors 2.0.0
 # This plugin allows you to add optional behaviors to GLPI.
 # - mandatory fields
 # - requester's group
 # - ticket's number format
 # - etc
-glpiPluginBehaviors="https://forge.glpi-project.org/attachments/download/2194/glpi-behaviors-1.5.0.tar.gz"
+glpiPluginBehaviors="https://forge.glpi-project.org/attachments/download/2205/glpi-behaviors-2.0.0.tar.gz"
 
-# Plugin Escalade 2.1.0
+# Plugin Escalade 2.2.1
 # This plugin simplifies the ticket escalation to different groups
 # It adds the following features :
 #
@@ -190,25 +186,25 @@ glpiPluginBehaviors="https://forge.glpi-project.org/attachments/download/2194/gl
 #    Closing cloned tickets simultaneously.
 #    Take the first or last group of technician (on ticket modification).	
 #    New button for rapid self-assignment of a ticket.
-glpiPluginEscalade="https://github.com/pluginsGLPI/escalade/releases/download/2.1.0/glpi-escalade-2.1.0.tar.gz"
+glpiPluginEscalade="https://github.com/pluginsGLPI/escalade/releases/download/2.2.1/glpi-escalade-2.2.1.tar.bz2"
 
-# Plugin Historical Purge 1.2.2
+# Plugin Historical Purge 1.3.0
 # This plugin enables historical purge
-glpiPluginHistoricalpurge="https://github.com/pluginsGLPI/purgelogs/releases/download/1.2.2/glpi-purgelogs-1.2.2.tar.gz"
+glpiPluginHistoricalpurge="https://github.com/pluginsGLPI/purgelogs/releases/download/1.3.0/glpi-purgelogs-1.3.0.tar.bz2"
 
 # Plugin Financial Reports 2.3.0
 # Financial report : Asset situation. This plugin allows you to generate a financial report (asset situation) for a given date.
 # - Export Csv, Pdf
-glpiPluginFinancialreports="https://github.com/InfotelGLPI/financialreports/releases/download/2.3.0/glpi-financialreports-2.3.0.tar.gz"
+# glpiPluginFinancialreports="https://github.com/InfotelGLPI/financialreports/releases/download/2.3.0/glpi-financialreports-2.3.0.tar.gz"
 
-# Plugin Accounts Inventory 2.2.0
+# Plugin Accounts Inventory 2.3.1
 # Manage accounts (login / password).
 # This plugin enables you to manage the accounts of your network and associate them with elements of the inventory.
 # The accounts are crypted in database with hash and crypting key.
 # A mailing system allow to verify expired accounts.
-glpiPluginAccountsinventory="https://github.com/InfotelGLPI/accounts/releases/download/2.2.0/glpi-accounts-2.2.0.tar.gz"
+glpiPluginAccountsinventory="https://github.com/InfotelGLPI/accounts/releases/download/2.3.1/glpi-accounts-2.3.1.tar.gz"
 
-# Plugin More Reporting 1.3.1
+# Plugin More Reporting 1.4.0
 # Add (and develop) new graphical reports for glpi.
 # 
 # This plugins embed a set of new statistics reports :
@@ -233,34 +229,23 @@ glpiPluginAccountsinventory="https://github.com/InfotelGLPI/accounts/releases/do
 # 
 # You can also develop new report with the framework of plugin.
 # See documentation : https://github.com/PluginsGLPI/mreporting/wiki
-glpiPluginMorereporting="https://github.com/pluginsGLPI/mreporting/releases/download/1.3.1/glpi-mreporting-1.3.1.tar.bz2"
+glpiPluginMorereporting="https://github.com/pluginsGLPI/mreporting/releases/download/1.4.0/glpi-mreporting-1.4.0.tar.bz2"
 
-# Plugin PDF
+# Plugin PDF 1.3.0
 # 
 # This plugin allow you to select and export informations of an equipment to PDF file.
 # - equipment types from GLPI
 # - equipment types from some plugins
 # - additional data from some plugins
 # - one or many object(s) in a file
-glpiPluginPdf="https://forge.glpi-project.org/attachments/download/2171/glpi-pdf-1.1.tar.gz"
+glpiPluginPdf="https://forge.glpi-project.org/attachments/download/2208/glpi_pdf-1.3.0.tar.gz"
 
 # Plugin Network Equipment Backup 2.1.3
 # 
 # This plugin allows you to back up the configuration of the network devices on TFTP server.
-glpiPluginNetworkequipmentbackup="https://github.com/jsamaniegog/nebackup/archive/2.1.3.zip"
+# glpiPluginNetworkequipmentbackup="https://github.com/jsamaniegog/nebackup/archive/2.1.3.zip"
 
-# Plugin Auto Login 2.1.1
-# 
-# This plugin add support to "Remember me" function in GLPI and skip the login page if you are already authenticated
-# Go to Configuration > General > Auto Login to configure remember time and default checkbox state
-glpiPluginAutologin="https://github.com/edgardmessias/autologin/releases/download/2.1.1/autologin.zip"
-
-# Plugin Browser Notification 1.1.9
-# 
-# This plugin allow your browser to show notifications for GLPI
-glpiPluginBrowsernotification="https://github.com/edgardmessias/browsernotification/releases/download/1.1.9/browsernotification.zip"
-
-# Plugin FusionInventory 9.1+1.1
+# Plugin FusionInventory 9.2+10
 	# FusionInventory is a free and open source project providing hardware, software inventory, software deployment and network 
 	#	discovery to the IT asset management and helpdesk software called GLPI.
 	# "FusionInventory for GLPI" is a collection of plugins communicating with some agents (FusionInventory-Agent), deployed on computers
@@ -283,7 +268,7 @@ glpiPluginBrowsernotification="https://github.com/edgardmessias/browsernotificat
 	#		network devices, etc.).
 	#        Change history and reports for each network port.
 	#        Printers cartridges' ink levels, daily page counters and reports.
-glpiPluginFusionInventory="https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.1%2B1.1/fusioninventory-for-glpi_9.1.1.1.tar.gz"
+glpiPluginFusionInventory="https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.2%2B1.0/glpi-fusioninventory-9.2.1.0.tar.bz2"
 
 clear
 
@@ -907,35 +892,33 @@ sleep 3
 	# GLPi installation process
 	# Downloading GLPI
 	cd /tmp
-	wget -qO- $glpiDownloadLink							| tar -zxv;			 mv glpi					/var/www/html/
+	wget -qO- $glpiDownloadLink					| tar -zxv;			 mv glpi					/var/www/html/
 
 	# Downloading a lot GLPi Plugins
-	wget -qO- $glpiPluginOs								 | tar -zxv;		 mv os						  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginRacks							 | tar -zxv;		 mv racks					  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginDashboard						 | tar -zxv;		 mv dashboard				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginMydashboard					 | tar -zxv;		 mv mydashboard				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginSeasonality					 | tar -zxv;		 mv seasonality				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginSimcard						 | tar -zxv;		 mv simcard					  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginDatainjection					 | tar -zxv;		 mv datainjection			  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginGenericobjects					 | tar -zxv;		 mv genericobject			  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginAppliancesinventory			 | tar -zxv;		 mv appliances				  $GLPI_PLUGINS_DIR	
-	wget -qO- $glpiPluginCertificatesinventory			 | tar -zxv;		 mv certificates			  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginDatabasesinventory				 | tar -zxv;		 mv databases				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginDomainsinventory				 | tar -zxv;		 mv domains					  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginHumanresources					 | tar -zxv;		 mv resources				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginWebapplicationsinventory		 | tar -zxv;		 mv webapplications			  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginBehaviors						 | tar -zxv;		 mv behaviors				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginEscalade						 | tar -zxv;		 mv escalade				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginHistoricalpurge				 | tar -zxv;		 mv purgelogs				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginFinancialreports				 | tar -zxv;		 mv financialreports		  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginAccountsinventory				 | tar -zxv;		 mv accounts				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginPdf							 | tar -zxv;		 mv pdf						  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginFusionInventory				 | tar -zxv;		 mv fusioninventory			  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginMorereporting					 | tar -jxv;		 mv mreporting				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginOrdermanagement				 | tar -jxv;		 mv order					  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginNetworkequipmentbackup			 | bsdtar -xvf-;	 mv nebackup-2.1.3			  $GLPI_PLUGINS_DIR/nebackup
-	wget -qO- $glpiPluginAutologin						 | bsdtar -xvf-;	 mv autologin				  $GLPI_PLUGINS_DIR
-	wget -qO- $glpiPluginBrowsernotification			 | bsdtar -xvf-;	 mv browsernotification		  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginOs						| tar -zxv;	 mv os						  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginRacks					| tar -zxv;	 mv racks					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDashboard					| tar -zxv;	 mv dashboard				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginMydashboard				| tar -zxv;	 mv mydashboard				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginGenericobjects				| tar -zxv;	 mv genericobject			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginAppliancesinventory			| tar -zxv;	 mv appliances				  $GLPI_PLUGINS_DIR	
+	wget -qO- $glpiPluginDatabasesinventory				| tar -zxv;	 mv databases				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginDomainsinventory				| tar -zxv;	 mv domains					  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginWebapplicationsinventory		 	| tar -zxv;	 mv webapplications			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginBehaviors					| tar -zxv;	 mv behaviors				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginAccountsinventory				| tar -zxv;	 mv accounts				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginPdf					| tar -zxv;	 mv pdf						  $GLPI_PLUGINS_DIR
+	
+	wget -qO- $glpiPluginEscalade					| tar -jxv;	 mv escalade				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginHistoricalpurge				| tar -jxv;	 mv purgelogs				  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginFusionInventory				| tar -jxv;	 mv fusioninventory			  $GLPI_PLUGINS_DIR
+	wget -qO- $glpiPluginMorereporting				| tar -jxv;	 mv mreporting				  $GLPI_PLUGINS_DIR
+
+#	wget -qO- $glpiPluginOrdermanagement				| tar -jxv;	 mv order					  $GLPI_PLUGINS_DIR
+#	wget -qO- $glpiPluginNetworkequipmentbackup			| bsdtar -xvf-;	 mv nebackup-2.1.3			  $GLPI_PLUGINS_DIR/nebackup
+#	wget -qO- $glpiPluginFinancialreports				| tar -zxv;	 mv financialreports		  $GLPI_PLUGINS_DIR
+#	wget -qO- $glpiPluginHumanresources				| tar -zxv;	 mv resources				  $GLPI_PLUGINS_DIR
+#	wget -qO- $glpiPluginSeasonality				| tar -zxv;	 mv seasonality				  $GLPI_PLUGINS_DIR
+#	wget -qO- $glpiPluginDatainjection				| tar -zxv;	 mv datainjection			  $GLPI_PLUGINS_DIR
 
 	chmod 775 /var/www/html/glpi -Rf
 	
