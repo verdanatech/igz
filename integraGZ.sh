@@ -2,9 +2,9 @@
 # -------------------------------------------------------------------------
 # @Programa 
 # 	@name: integraGZ.sh
-#	@versao: 3.0.0
-#	@Data 16 de Julho de 2018
-#	@Copyright: Verdanatech Soluções em TI, 2016 - 2018
+#	@versao: 3.0.1
+#	@Data 25 de Janeiro de 2020
+#	@Copyright: Verdanatech Soluções em TI, 2016 - 2020
 #	@Copyright: Pillares Consulting, 2016
 # --------------------------------------------------------------------------
 # LICENSE
@@ -27,7 +27,7 @@
 #
 
 versionDate="Jul 16, 2018"
-TITULO="Verdanatech iGZ - v.3.0.0"
+TITULO="Verdanatech iGZ - v.3.0.1"
 BANNER="http://www.verdanatech.com"
 
 devMail="halexsandro.sales@verdanatech.com"
@@ -37,8 +37,8 @@ source /etc/os-release
 
 serverAddress=$(hostname -I | cut -d' ' -f1)
 
-glpiVersion="GLPI 9.3.2"
-zabbixVersion="Zabbix 4.0.1"
+glpiVersion="GLPI 9.4.5"
+zabbixVersion="Zabbix 4.4.4"
 
 verdanatechGIT="https://github.com/verdanatech/igz"
 
@@ -56,10 +56,10 @@ GLPI_DIR="/var/www/html/glpi"
 GLPI_PLUGINS_DIR=$GLPI_DIR/plugins
 
 # Zabbix link
-zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/4.0.1/zabbix-4.0.1.tar.gz"
+zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/4.4.4/zabbix-4.4.4.tar.gz"
 
 # GLPi link
-glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.3.2/glpi-9.3.2.tgz"
+glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.4.5/glpi-9.4.5.tgz"
 
 # Function erroDetect
 
@@ -231,7 +231,21 @@ SET_REPOS ()
 					apt-get upgrade -y
 					clear
 					
-				;;	
+				;;
+				
+				10)
+				
+					echo "deb http://ftp.br.debian.org/debian/ buster main" > /etc/apt/sources.list
+					echo "deb-src http://ftp.br.debian.org/debian/ buster main" >> /etc/apt/sources.list
+					echo "deb http://security.debian.org/debian-security buster/updates main contrib" >> /etc/apt/sources.list
+					echo "deb-src http://security.debian.org/debian-security buster/updates main contrib" >> /etc/apt/sources.list
+					echo "deb http://ftp.de.debian.org/debian buster main non-free"  >> /etc/apt/sources.list
+				
+					apt-get update
+					apt-get upgrade -y
+					clear
+				
+				;;
 				
 			esac
 			
@@ -272,7 +286,16 @@ LAMP_INSTALL ()
 					echo "Intalling Debian packages for GLPI..."
 					sleep 1
 					apt-get -y install apache2 bsdtar bzip2 curl libapache2-mod-php7.0 libmariadbd-dev libmariadbd18 mariadb-server openjdk-8-jdk php-soap php-cas php7.0 php7.0-apcu php7.0-cli php7.0-common php7.0-curl php7.0-gd php7.0-imap php7.0-ldap php7.0-mysql php7.0-snmp php7.0-xmlrpc php7.0-xml php7.0-mbstring php7.0-bcmath
-				;;	
+				;;
+				
+				10)
+				
+					clear
+					echo "Intalling Debian packages for GLPI..."
+					sleep 1
+					apt-get -y install apache2 bsdtar bzip2 curl libapache2-mod-php7.3 libmariadbd-dev mariadb-server php-soap php-cas php7.3 php-apcu php7.3-cli php7.3-common php7.3-curl php7.3-gd php7.3-imap php7.3-ldap php7.3-mysql php7.3-snmp php7.3-xmlrpc php7.3-xml php7.3-mbstring php7.3-bcmath
+
+				;;
 					
 			esac
 			;;
