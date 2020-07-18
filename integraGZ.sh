@@ -26,8 +26,8 @@
 # Variables Declaration
 #
 
-versionDate="Jul 16, 2018"
-TITULO="Verdanatech iGZ - v.3.0.1"
+versionDate="Jul 17, 2020
+TITULO="Verdanatech iGZ - v.3.0.2"
 BANNER="http://www.verdanatech.com"
 
 devMail="halexsandro.sales@verdanatech.com"
@@ -59,7 +59,7 @@ GLPI_PLUGINS_DIR=$GLPI_DIR/plugins
 zabbixDownloadLink="https://ufpr.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/4.4.4/zabbix-4.4.4.tar.gz"
 
 # GLPi link
-glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.4.5/glpi-9.4.5.tgz"
+glpiDownloadLink="https://github.com/glpi-project/glpi/releases/download/9.5.1/glpi-9.5.1.tgz"
 
 # Function erroDetect
 
@@ -285,7 +285,7 @@ LAMP_INSTALL ()
 					clear
 					echo "Intalling Debian packages for GLPI..."
 					sleep 1
-					apt-get -y install apache2 bsdtar bzip2 curl libapache2-mod-php7.0 libmariadbd-dev libmariadbd18 mariadb-server openjdk-8-jdk php-soap php-cas php7.0 php7.0-apcu php7.0-cli php7.0-common php7.0-curl php7.0-gd php7.0-imap php7.0-ldap php7.0-mysql php7.0-snmp php7.0-xmlrpc php7.0-xml php7.0-mbstring php7.0-bcmath
+					apt-get -y install apache2 bsdtar bzip2 libapache2-mod-php7.0 libmariadbd-dev mariadb-server php-soap php-cas php-apcu php7.0 php7.0-{cli,common,curl,gd,imap,ldap,mysql,snmp,xmlrpc,xml,mbstring,bcmath,zip,intl,bz2}
 				;;
 				
 				10)
@@ -293,7 +293,7 @@ LAMP_INSTALL ()
 					clear
 					echo "Intalling Debian packages for GLPI..."
 					sleep 1
-					apt-get -y install apache2 bsdtar bzip2 curl libapache2-mod-php7.3 libmariadbd-dev mariadb-server php-soap php-cas php7.3 php-apcu php7.3-cli php7.3-common php7.3-curl php7.3-gd php7.3-imap php7.3-ldap php7.3-mysql php7.3-snmp php7.3-xmlrpc php7.3-xml php7.3-mbstring php7.3-bcmath
+					apt-get -y install apache2 bsdtar bzip2 libapache2-mod-php7.3 libmariadbd-dev mariadb-server php-soap php-cas php-apcu php7.3 php7.3-{cli,common,curl,gd,imap,ldap,mysql,snmp,xmlrpc,xml,mbstring,bcmath,zip,intl,bz2}
 
 				;;
 					
